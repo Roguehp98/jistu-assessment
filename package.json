@@ -31,13 +31,8 @@
 		"turbo": "^2.10.12",
 		"typescript": "7.0.2"
 	},
+	"packageManager": "npm@11.7.0",
 	"engines": {
 		"node": ">=24"
-	},
-	"devEngines": {
-		"packageManager": {
-			"name": "npm",
-			"version": "11.12.1"
-		}
 	}
 }

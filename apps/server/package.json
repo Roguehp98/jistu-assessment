@@ -1,0 +1,15 @@
+{
+	"name": "server",
+	"type": "module",
+	"scripts": {
+		"dev": "json-server shipments.json --port 3001",
+		"generate": "tsx scripts/generate.ts"
+	},
+	"dependencies": {
+		"json-server": "^1.0.0-beta.15"
+	},
+	"devDependencies": {
+		"@types/node": "^26.1.1",
+		"tsx": "^4.23.0"
+	}
+}
