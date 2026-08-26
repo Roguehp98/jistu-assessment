@@ -1,0 +1,88 @@
+{
+	"$schema": "https://biomejs.dev/schemas/2.3.10/schema.json",
+	"files": {
+		"includes": [
+			"**/apps/**/*",
+			"**/packages/**/*",
+			"!**/node_modules",
+			"!**/dist",
+			"!**/.react-router",
+			"!**/auto-imports.d.ts",
+			"!**/build"
+		]
+	},
+	"assist": {
+		"enabled": true,
+		"actions": {
+			"source": {
+				"organizeImports": {
+					"level": "on",
+					"options": {
+						"groups": [
+							[":BUN:", ":NODE:"],
+							":BLANK_LINE:",
+							[":PACKAGE:", ":ALIAS:", "!@packages/**", "!@repo/**", "!@web/**", "!@server/**"],
+							":BLANK_LINE:",
+							":PACKAGE_WITH_PROTOCOL:",
+							":BLANK_LINE:",
+							["@packages/**", "@repo/**", "@web/**", "@server/**"],
+							":BLANK_LINE:",
+							":PATH:",
+							":BLANK_LINE:",
+							":URL:"
+						]
+					}
+				}
+			}
+		}
+	},
+	"formatter": {
+		"enabled": true,
+		"indentStyle": "tab",
+		"lineWidth": 100
+	},
+	"linter": {
+		"enabled": true,
+		"rules": {
+			"recommended": true,
+			"suspicious": {
+				"noArrayIndexKey": "error",
+				"noExplicitAny": "warn"
+			},
+			"style": {
+				"noNonNullAssertion": "off",
+				"noParameterAssign": "off",
+				"useDefaultParameterLast": "off",
+				"useAsConstAssertion": "error",
+				"useEnumInitializers": "error",
+				"useSelfClosingElements": "error",
+				"useSingleVarDeclarator": "error",
+				"noUnusedTemplateLiteral": "error",
+				"useNumberNamespace": "error",
+				"noInferrableTypes": "error",
+				"noUselessElse": "error",
+				"useConsistentArrayType": {
+					"level": "error",
+					"options": {
+						"syntax": "shorthand"
+					}
+				}
+			},
+			"correctness": {
+				"noUnusedImports": "error",
+				"useJsxKeyInIterable": "error",
+				"noUnusedVariables": "off",
+				"noUnusedFunctionParameters": "off"
+			},
+			"a11y": {
+				"useMediaCaption": "off",
+				"noStaticElementInteractions": "off"
+			}
+		}
+	},
+	"css": {
+		"parser": {
+			"tailwindDirectives": true
+		}
+	}
+}
