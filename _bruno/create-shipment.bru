@@ -1,0 +1,50 @@
+meta {
+  name: Create shipment
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/shipments
+  body: json
+  auth: none
+}
+
+headers {
+  content-type: application/json
+}
+
+body:json {
+  {
+    "client_name": "Bruno Test",
+    "label": "TEST-581-000001",
+    "status": "OPEN",
+    "arrival_date": "2026-08-26T00:00:00.000Z",
+    "delivery_by_date": "2026-08-28T00:00:00.000Z",
+    "eta": "2026-08-27T00:00:00.000Z",
+    "warehouse_id": "581",
+    "lat": 32.75,
+    "lng": -96.95
+  }
+}
+
+script:post-response {
+  bru.setVar("createdShipmentId", res.getBody().id);
+}
+
+docs {
+  ```ts
+  type Response = {
+    id: string;
+    client_name: string;
+    label: string;
+    status: "OPEN" | "IN_TRANSIT" | "DELIVERED";
+    arrival_date: string;
+    delivery_by_date: string;
+    eta: string;
+    warehouse_id: string;
+    lat: number;
+    lng: number;
+  };
+  ```
+}

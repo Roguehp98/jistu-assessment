@@ -1,0 +1,41 @@
+meta {
+  name: List shipments
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/shipments?_page=1&_per_page=25
+  body: none
+  auth: none
+}
+
+params:query {
+  _page: 1
+  _per_page: 25
+}
+
+docs {
+  ```ts
+  type Response = {
+    first: number;
+    prev: number | null;
+    next: number | null;
+    last: number;
+    pages: number;
+    items: number;
+    data: Array<{
+      id: string;
+      client_name: string;
+      label: string;
+      status: "OPEN" | "IN_TRANSIT" | "DELIVERED";
+      arrival_date: string;
+      delivery_by_date: string;
+      eta: string;
+      warehouse_id: string;
+      lat: number;
+      lng: number;
+    }>;
+  };
+  ```
+}

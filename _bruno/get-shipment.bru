@@ -1,0 +1,28 @@
+meta {
+  name: Get shipment
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/shipments/shp_001
+  body: none
+  auth: none
+}
+
+docs {
+  ```ts
+  type Response = {
+    id: string;
+    client_name: string;
+    label: string;
+    status: "OPEN" | "IN_TRANSIT" | "DELIVERED";
+    arrival_date: string;
+    delivery_by_date: string;
+    eta: string;
+    warehouse_id: string;
+    lat: number;
+    lng: number;
+  };
+  ```
+}
