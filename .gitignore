@@ -27,6 +27,12 @@ out/
 build
 dist
 
+# tools
+.react-router
+.turbo
+
+# auto-imports
+auto-imports.d.ts
 
 # Debug
 npm-debug.log*

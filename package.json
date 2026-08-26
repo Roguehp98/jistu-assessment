@@ -10,7 +10,8 @@
 		"check-types": "turbo run check-types",
 		"dev": "turbo run dev",
 		"format": "prettier --write \"**/*.{ts,tsx,md}\"",
-		"lint": "turbo run lint",
+		"lint:apply": "biome check --write --unsafe .",
+		"lint:check": "biome check .",
 		"prepare": "husky"
 	},
 	"nano-staged": {
