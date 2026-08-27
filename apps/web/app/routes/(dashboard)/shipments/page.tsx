@@ -114,7 +114,7 @@ const useShipments = () => {
 
 const ErrorMessage = () => (
 	<p
-		className="mb-4 border-l-4 border-red-600 bg-red-50 px-4 py-3 text-sm text-red-900"
+		className="mb-4 border-l-4 border-danger-border bg-danger-surface px-4 py-3 text-sm text-danger-text"
 		role="alert"
 	>
 		Unable to load shipments. Please try again.
@@ -126,16 +126,16 @@ const Page = () => {
 
 	return (
 		<main className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-			<header className="mb-6 flex items-end justify-between gap-4">
+			<header className="mb-6">
 				<div>
-					<h1 className="text-2xl font-semibold text-gray-950">Shipments</h1>
-					<p className="mt-1 text-sm text-gray-600">{items} total</p>
+					<h1 className="text-2xl font-semibold text-foreground">Shipments</h1>
+					<p className="mt-1 text-sm text-muted">{items} total</p>
 				</div>
 			</header>
 
 			<div className="mb-4 flex w-full flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-end">
 				<div className="w-full sm:max-w-sm">
-					<label className="mb-2 block text-sm font-medium text-gray-800" htmlFor="shipment-search">
+					<label className="mb-2 block text-sm font-medium text-label" htmlFor="shipment-search">
 						Search shipments
 					</label>
 					<Input.Search
@@ -149,7 +149,7 @@ const Page = () => {
 				</div>
 
 				<div className="w-full sm:w-72">
-					<label className="mb-2 block text-sm font-medium text-gray-800" htmlFor="shipment-status">
+					<label className="mb-2 block text-sm font-medium text-label" htmlFor="shipment-status">
 						Status
 					</label>
 					<Select<SHIPMENT_STATUS[]>
@@ -166,7 +166,7 @@ const Page = () => {
 
 				<div className="w-full sm:w-80">
 					<label
-						className="mb-2 block text-sm font-medium text-gray-800"
+						className="mb-2 block text-sm font-medium text-label"
 						htmlFor="shipment-arrival-date"
 					>
 						Arrival date

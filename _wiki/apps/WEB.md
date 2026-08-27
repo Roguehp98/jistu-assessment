@@ -87,6 +87,7 @@ Tiny, single-purpose, `use-*`, auto-imported. `useIsomorphicLayoutEffect` (ahook
 ## Styling
 
 - **Tailwind first**, SCSS for complex.
+- **Color scheme** — root provider syncs Ant Design with system/light/dark; semantic Tailwind tokens use `light-dark()`. Toggle persistence and pre-paint init live in `libs/color-scheme.ts`.
 - `safelist` regex for `grid-cols-[1-6]`/`col-span-[1-6]` — dynamic classes purge otherwise.
 
 ## `root.tsx` composition

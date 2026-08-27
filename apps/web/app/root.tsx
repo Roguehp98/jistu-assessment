@@ -11,6 +11,10 @@ import {
 import type { Route } from "./+types/root";
 import "@web/styles/app.css";
 
+import ColorSchemeProvider from "@web/ui/elements/color-scheme/provider";
+
+import { COLOR_SCHEME_INIT_SCRIPT } from "./libs/color-scheme";
+
 export const links: Route.LinksFunction = () => [
 	{ rel: "preconnect", href: "https://fonts.googleapis.com" },
 	{
@@ -26,15 +30,19 @@ export const links: Route.LinksFunction = () => [
 
 export function Layout({ children }: { children: React.ReactNode }) {
 	return (
-		<html lang="en">
+		<html lang="en" suppressHydrationWarning>
 			<head>
 				<meta charSet="utf-8" />
 				<meta name="viewport" content="width=device-width, initial-scale=1" />
+				<meta name="color-scheme" content="light dark" />
+				<script>{COLOR_SCHEME_INIT_SCRIPT}</script>
 				<Meta />
 				<Links />
 			</head>
 			<body>
-				<NuqsAdapter>{children}</NuqsAdapter>
+				<ColorSchemeProvider>
+					<NuqsAdapter>{children}</NuqsAdapter>
+				</ColorSchemeProvider>
 
 				<ScrollRestoration />
 				<Scripts />

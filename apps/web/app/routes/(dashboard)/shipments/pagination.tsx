@@ -24,7 +24,7 @@ const Pagination: FC<IShipmentsPagination> = ({
 		<div className="mt-5 overflow-x-auto pb-1">
 			<div className="flex min-w-max items-center justify-between gap-6">
 				<div className="flex shrink-0 items-center gap-2">
-					<label className="text-sm font-medium text-gray-800" htmlFor="shipment-page-size">
+					<label className="text-sm font-medium text-label" htmlFor="shipment-page-size">
 						Rows per page
 					</label>
 					<Select
