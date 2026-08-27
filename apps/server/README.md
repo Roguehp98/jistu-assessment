@@ -1,11 +1,12 @@
 # Shipment API
 
-Generate the initial data and start JSON Server:
+Start JSON Server:
 
 ```bash
-npm run generate
 npm run dev
 ```
+
+The dev lifecycle generates `shipments.json` when it does not exist.
 
 The API is available at `http://localhost:3001`.
 

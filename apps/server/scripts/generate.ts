@@ -1,5 +1,7 @@
 import { writeFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
 
+const shipmentsPath = fileURLToPath(new URL("../shipments.json", import.meta.url));
 const statusList = ["OPEN", "IN_TRANSIT", "DELIVERED"];
 const statuses = statusList.map((status) => ({ id: status }));
 const clients = ["Sony", "Samsung", "DHL", "CargoTrans", "ShipCo", "Logix", "Oceanic"];
@@ -31,5 +33,5 @@ for (let i = 1; i <= 100; i++) {
 }
 
 const result = { statuses, shipments };
-writeFileSync("shipments.json", JSON.stringify(result, null, 2));
+writeFileSync(shipmentsPath, JSON.stringify(result, null, 2));
 console.log("shipment data generated");
