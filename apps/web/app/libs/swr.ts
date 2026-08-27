@@ -17,8 +17,6 @@ import { INITIAL_ACTION_STATUS } from "./actions";
 export const BASE_CONFIG: SWRConfiguration = {
 	dedupingInterval: 3_000,
 	focusThrottleInterval: 30_000,
-	revalidateOnFocus: import.meta.env.PROD,
-	revalidateOnReconnect: import.meta.env.PROD,
 	refreshInterval: 5 * 60_000,
 };
 
