@@ -42,4 +42,7 @@ export default defineConfig({
 	resolve: {
 		tsconfigPaths: true,
 	},
+	define: {
+		"import.meta.env.SERVER_URL": JSON.stringify(process.env.SERVER_URL),
+	},
 });

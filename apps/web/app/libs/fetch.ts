@@ -4,7 +4,6 @@ const PAYLOAD_METHODS = new Set(["POST", "PUT", "PATCH", "DELETE"]);
 
 export const fetch = ofetch.create({
 	baseURL: import.meta.env.SERVER_URL,
-	credentials: "include",
 	retry: 3,
 	retryDelay: 2_500,
 	timeout: 30_000,
