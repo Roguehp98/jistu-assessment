@@ -15,7 +15,7 @@ Index — detail in linked section.
 - **Imports (auto)**: React, ahooks, react-router (`use*`, `Outlet`/`Link`/`NavLink`), es-toolkit, `clsx` (as `cn`).
 - **Exports** (`hooks/`, `ui/elements/`): default = main hook/component; named = secondary (helpers, types).
 - **Env**: all public env via `import.meta.env.*` (`vite.config.ts`) — **NEVER** `process.env` at runtime.
-- **Antd**: single import from `antd`.
+- **UI/Antd**: single import from `antd`.
 
 ## Layout
 
