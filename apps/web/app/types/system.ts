@@ -1,0 +1,6 @@
+export enum ACTION_STATUS {
+	NORMAL = "NORMAL",
+	SUCCESS = "SUCCESS",
+	ERROR = "ERROR",
+	PENDING = "PENDING",
+}

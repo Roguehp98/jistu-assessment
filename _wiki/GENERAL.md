@@ -19,7 +19,7 @@ Repo-wide static info. Commands → [COMMANDS.md](COMMANDS.md).
 
 | Port   | App    |
 | ------ | ------ |
-| `5173` | web    |
+| `3000` | web    |
 | `3001` | server |
 
 ## Layout
