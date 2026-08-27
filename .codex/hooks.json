@@ -1,0 +1,38 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "apply_patch|Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -r '.tool_response.filePath // .tool_input.file_path' | { read -r f; npx biome check --write --skip-parse-errors --no-errors-on-unmatched --files-ignore-unknown=true \"$f\"; } 2>/dev/null || true",
+            "statusMessage": "Running biome format",
+            "timeout": 30
+          },
+          {
+            "type": "command",
+            "command": "bash ./_agents/force-conventional-update.sh",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ./_agents/force-use-skills.sh",
+            "timeout": 10
+          },
+          {
+            "type": "command",
+            "command": "bash ./_agents/force-concise-response.sh",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}

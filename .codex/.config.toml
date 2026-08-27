@@ -1,0 +1,9 @@
+# Equivalent to Claude Code's "bypassPermissions"
+approval_policy = "never"
+
+# Project doc size limit (AGENTS.md can be large)
+project_doc_max_bytes = 65536
+
+# Enable hooks support
+[features]
+hooks = true
