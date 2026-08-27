@@ -62,6 +62,7 @@ Stack: HTTP `ofetch` · util `es-toolkit` · hooks `ahooks` · val `valibot` · 
 ### Fetch — `libs/fetch.ts`
 
 - Single `ofetch.create` (`credentials: "include"`) shared by SSR loaders/actions (forwards cookies) and client SWR.
+- Use `fetchValidated(schema, request, options)` for runtime-validated responses; a generic on `fetch` only asserts the type and is not validation.
 - `onResponse`: **401 outside `/auth/*`** → opens login via `createSerializer(loginParser, { "no-verify": true, returnUrl })`.
 - `onRequest` (client-only): injects `x-posthog-distinct-id` from `getSessionDistinctId()`.
 - `retry: 3` reads only. `onRequest` zeroes it for POST/PUT/PATCH/DELETE — a timed-out write may already have landed, and no order dedupe exists. ofetch takes no function for `retry`.

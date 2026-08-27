@@ -1,4 +1,5 @@
-import { ofetch } from "ofetch";
+import { type FetchOptions, type FetchRequest, ofetch } from "ofetch";
+import { type GenericSchema, type InferOutput, parse } from "valibot";
 
 const PAYLOAD_METHODS = new Set(["POST", "PUT", "PATCH", "DELETE"]);
 
@@ -21,3 +22,13 @@ export const fetch = ofetch.create({
 		if (typeof window === "undefined") return;
 	},
 });
+
+export const fetchValidated = async <TSchema extends GenericSchema>(
+	schema: TSchema,
+	request: FetchRequest,
+	options?: FetchOptions,
+): Promise<InferOutput<TSchema>> => {
+	const response: unknown = await fetch(request, options);
+
+	return parse(schema, response);
+};
