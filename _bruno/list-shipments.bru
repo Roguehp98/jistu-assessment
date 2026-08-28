@@ -5,7 +5,7 @@ meta {
 }
 
 get {
-  url: {{baseUrl}}/shipments?_page=1&_per_page=25
+  url: {{baseUrl}}/shipments?_page=1&_per_page=25&_sort=-update_at
   body: none
   auth: none
 }
@@ -13,6 +13,7 @@ get {
 params:query {
   _page: 1
   _per_page: 25
+  _sort: -update_at
 }
 
 docs {
