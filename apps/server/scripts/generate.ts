@@ -15,12 +15,13 @@ const shipments = [];
 
 for (let i = 1; i <= 100; i++) {
 	const arrival = new Date(baseDate);
-	arrival.setDate(arrival.getDate() - Math.floor(Math.random() * 10));
+	arrival.setDate(arrival.getDate() - (1 + Math.floor(Math.random() * 10)));
 	const eta = new Date(arrival);
 	eta.setHours(eta.getHours() + Math.floor(Math.random() * 48));
 	const deliveryBy = new Date(arrival.getTime() + 2 * 86_400_000);
+	const latestUpdateTime = Math.min(deliveryBy.getTime(), baseDate.getTime());
 	const updatedAt = new Date(
-		arrival.getTime() + 1 + Math.random() * (deliveryBy.getTime() - arrival.getTime() - 1),
+		arrival.getTime() + 1 + Math.random() * (latestUpdateTime - arrival.getTime() - 1),
 	);
 	shipments.push({
 		id: `shp_${String(i).padStart(3, "0")}`,
