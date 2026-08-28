@@ -1,0 +1,4 @@
+export enum ASSIGNMENT_STATUS {
+	OPEN = "OPEN",
+	COMPLETED = "COMPLETED",
+}
