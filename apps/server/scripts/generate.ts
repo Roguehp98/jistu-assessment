@@ -18,15 +18,19 @@ for (let i = 1; i <= 100; i++) {
 	arrival.setDate(arrival.getDate() - Math.floor(Math.random() * 10));
 	const eta = new Date(arrival);
 	eta.setHours(eta.getHours() + Math.floor(Math.random() * 48));
+	const deliveryBy = new Date(arrival.getTime() + 2 * 86_400_000);
+	const updatedAt = new Date(
+		arrival.getTime() + 1 + Math.random() * (deliveryBy.getTime() - arrival.getTime() - 1),
+	);
 	shipments.push({
 		id: `shp_${String(i).padStart(3, "0")}`,
 		client_name: clients[i % clients.length],
 		label: `${warehouses[i % warehouses.length]}-581-2505${20 + (i % 10)}-${i}`,
 		status: statusList[i % statusList.length],
 		arrival_date: arrival.toISOString(),
-		delivery_by_date: new Date(arrival.getTime() + 2 * 86_400_000).toISOString(),
+		delivery_by_date: deliveryBy.toISOString(),
 		eta: eta.toISOString(),
-		update_at: baseDate.toISOString(),
+		update_at: updatedAt.toISOString(),
 		warehouse_id: "581",
 		lat: Math.random() * (maxLat - minLat) + minLat,
 		lng: Math.random() * (maxLng - minLng) + minLng,
