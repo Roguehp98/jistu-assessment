@@ -1,8 +1,9 @@
 import { Table as AntTable, type TableProps, Tag } from "antd";
-import type { FC } from "react";
+import { type FC, useState } from "react";
 
 import { SHIPMENT_STATUS, type Shipment } from "@web/types/shipments";
 
+import Drawer from "./drawer";
 import { SHIPMENT_STATUS_LABELS, type ShipmentArrivalSort } from "./utils";
 
 const STATUS_COLORS = {
@@ -60,26 +61,55 @@ const Table: FC<IShipmentsTable> = ({
 	isLoading,
 	onArrivalSortChange,
 }) => {
+	const [selectedShipment, setSelectedShipment] = useState<Shipment | null>(null);
+
 	const handleChange: NonNullable<TableProps<Shipment>["onChange"]> = (_, __, sorter) => {
 		const arrivalSorter = Array.isArray(sorter) ? sorter[0] : sorter;
 
 		onArrivalSortChange(arrivalSorter.order ?? null);
 	};
 
+	const handleClose = () => {
+		setSelectedShipment(null);
+	};
+
+	const handleRowClick = (shipment: Shipment) => {
+		setSelectedShipment(shipment);
+	};
+
+	const getRowProps: NonNullable<TableProps<Shipment>["onRow"]> = (shipment) => ({
+		"aria-label": `View shipment ${shipment.label}`,
+		className:
+			"cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-blue-600",
+		tabIndex: 0,
+		onClick: () => handleRowClick(shipment),
+		onKeyDown: (event) => {
+			if (!["Enter", " "].includes(event.key)) return;
+
+			event.preventDefault();
+			handleRowClick(shipment);
+		},
+	});
+
 	return (
-		<AntTable<Shipment>
-			bordered
-			caption={<span className="sr-only">Shipments</span>}
-			columns={getColumns(arrivalSort)}
-			dataSource={dataSource}
-			loading={isLoading}
-			locale={{ emptyText }}
-			pagination={false}
-			rowKey="id"
-			scroll={{ x: 820 }}
-			size="middle"
-			onChange={handleChange}
-		/>
+		<>
+			<AntTable<Shipment>
+				bordered
+				caption={<span className="sr-only">Shipments</span>}
+				columns={getColumns(arrivalSort)}
+				dataSource={dataSource}
+				loading={isLoading}
+				locale={{ emptyText }}
+				pagination={false}
+				rowKey="id"
+				scroll={{ x: 820 }}
+				size="middle"
+				onChange={handleChange}
+				onRow={getRowProps}
+			/>
+
+			<Drawer shipment={selectedShipment} onClose={handleClose} />
+		</>
 	);
 };
 

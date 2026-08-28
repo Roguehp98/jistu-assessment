@@ -1,4 +1,4 @@
-import { enum_, type InferOutput, number, object, string } from "valibot";
+import { enum_, type InferOutput, nullable, number, object, optional, string } from "valibot";
 
 export enum SHIPMENT_STATUS {
 	OPEN = "OPEN",
@@ -15,6 +15,7 @@ export const ShipmentSchema = object({
 	delivery_by_date: string(),
 	eta: string(),
 	warehouse_id: string(),
+	assignment_id: optional(nullable(string()), null),
 	lat: number(),
 	lng: number(),
 });

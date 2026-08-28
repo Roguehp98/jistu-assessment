@@ -1,4 +1,4 @@
-import { Drawer as AntDrawer, Button, Input, Select } from "antd";
+import { Drawer as AntDrawer, Button, Form, Input, Select } from "antd";
 import type { FC } from "react";
 
 import type { Shipment } from "@web/types/shipments";
@@ -15,6 +15,28 @@ type IDrawer = {
 	onClose: () => void;
 };
 
+type ShipmentFormValues = {
+	assignment_id: string;
+	arrival_date: string;
+	client_name: string;
+	delivery_by_date: string;
+	lat: string;
+	lng: string;
+	status: Shipment["status"];
+	warehouse_id: string;
+};
+
+const getFormValues = (shipment: Shipment): ShipmentFormValues => ({
+	assignment_id: shipment.assignment_id ?? "Unassigned",
+	arrival_date: dateFormatter.format(new Date(shipment.arrival_date)),
+	client_name: shipment.client_name,
+	delivery_by_date: shipment.delivery_by_date,
+	lat: String(shipment.lat),
+	lng: String(shipment.lng),
+	status: shipment.status,
+	warehouse_id: shipment.warehouse_id,
+});
+
 const Drawer: FC<IDrawer> = ({ shipment, onClose }) => (
 	<AntDrawer
 		destroyOnHidden
@@ -28,66 +50,51 @@ const Drawer: FC<IDrawer> = ({ shipment, onClose }) => (
 		}
 		open={shipment !== null}
 		title={shipment ? `Shipment ${shipment.label}` : "Shipment details"}
-		width="min(480px, 100vw)"
+		size="min(480px, 100vw)"
 		onClose={onClose}
 	>
-		<div className="grid gap-4">
-			<div>
-				<label className="mb-2 block text-sm font-medium text-gray-800" htmlFor="client-name">
-					Client name
-				</label>
-				<Input id="client-name" readOnly value={shipment?.client_name ?? ""} />
-			</div>
+		{shipment && (
+			<Form
+				key={shipment.id}
+				initialValues={getFormValues(shipment)}
+				layout="vertical"
+				preserve={false}
+			>
+				<Form.Item label="Client name" name="client_name">
+					<Input disabled />
+				</Form.Item>
 
-			<div>
-				<label className="mb-2 block text-sm font-medium text-gray-800" htmlFor="status">
-					Status
-				</label>
-				<Select
-					disabled
-					id="status"
-					className="w-full"
-					options={SHIPMENT_STATUS_OPTIONS}
-					value={shipment?.status}
-				/>
-			</div>
+				<Form.Item label="Status" name="status">
+					<Select disabled options={SHIPMENT_STATUS_OPTIONS} />
+				</Form.Item>
 
-			<div>
-				<label className="mb-2 block text-sm font-medium text-gray-800" htmlFor="arrival-date">
-					Arrival date
-				</label>
-				<Input
-					id="arrival-date"
-					readOnly
-					value={shipment ? dateFormatter.format(new Date(shipment.arrival_date)) : ""}
-				/>
-			</div>
+				<Form.Item label="Arrival date" name="arrival_date">
+					<Input disabled />
+				</Form.Item>
 
-			<div>
-				<label className="mb-2 block text-sm font-medium text-gray-800" htmlFor="delivery-by-date">
-					Delivery by date
-				</label>
-				<Input
-					id="delivery-by-date"
-					readOnly
-					value={shipment ? dateFormatter.format(new Date(shipment.delivery_by_date)) : ""}
-				/>
-			</div>
+				<Form.Item label="Delivery by date" name="delivery_by_date">
+					<Input />
+				</Form.Item>
 
-			<div>
-				<label className="mb-2 block text-sm font-medium text-gray-800" htmlFor="warehouse-id">
-					Warehouse ID
-				</label>
-				<Input id="warehouse-id" readOnly value={shipment?.warehouse_id ?? ""} />
-			</div>
+				<Form.Item label="Warehouse ID" name="warehouse_id">
+					<Input disabled />
+				</Form.Item>
 
-			<div>
-				<label className="mb-2 block text-sm font-medium text-gray-800" htmlFor="assignment-id">
-					Assignment ID
-				</label>
-				<Input id="assignment-id" readOnly value={shipment?.assignment_id ?? "Unassigned"} />
-			</div>
-		</div>
+				<Form.Item label="Assignment ID" name="assignment_id">
+					<Input disabled />
+				</Form.Item>
+
+				<div className="grid grid-cols-2 gap-4">
+					<Form.Item className="mb-0" label="Latitude" name="lat">
+						<Input inputMode="decimal" step="any" type="number" />
+					</Form.Item>
+
+					<Form.Item className="mb-0" label="Longitude" name="lng">
+						<Input inputMode="decimal" step="any" type="number" />
+					</Form.Item>
+				</div>
+			</Form>
+		)}
 	</AntDrawer>
 );
 
