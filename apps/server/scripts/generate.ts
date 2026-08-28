@@ -26,6 +26,7 @@ for (let i = 1; i <= 100; i++) {
 		arrival_date: arrival.toISOString(),
 		delivery_by_date: new Date(arrival.getTime() + 2 * 86_400_000).toISOString(),
 		eta: eta.toISOString(),
+		update_at: baseDate.toISOString(),
 		warehouse_id: "581",
 		lat: Math.random() * (maxLat - minLat) + minLat,
 		lng: Math.random() * (maxLng - minLng) + minLng,
