@@ -37,7 +37,7 @@ const useShipments = () => {
 	const arrivalToParam = getDateParam(arrivalTo);
 	const arrivalDateRange = getArrivalDateRange(arrivalFrom, arrivalTo);
 	const debouncedSearch = useDebounce(search.trim(), { wait: 300 });
-	const { data, isLoading, isError } = useEnhancedSWR(
+	const { data, isLoading, isError, mutate } = useEnhancedSWR(
 		[
 			ACTION_TAG.GET_MANY_SHIPMENTS,
 			normalizedPage,
@@ -84,6 +84,10 @@ const useShipments = () => {
 		setQuery({ arrivalSort: nextArrivalSort, page: 1 });
 	};
 
+	const handleShipmentUpdated = async () => {
+		await mutate();
+	};
+
 	return {
 		filters: {
 			arrivalDateRange,
@@ -108,6 +112,7 @@ const useShipments = () => {
 			emptyText: search ? "No matching shipments" : "No shipments",
 			isLoading,
 			onArrivalSortChange: handleArrivalSortChange,
+			onUpdated: handleShipmentUpdated,
 		},
 	};
 };

@@ -56,7 +56,7 @@ const getManyShipmentsQuery = ({
 	const query: Record<string, number | string> = {
 		_page: page,
 		_per_page: perPage,
-		_sort: arrivalSort ? `-status,${arrivalSort}` : "-status",
+		_sort: arrivalSort ?? "-update_at",
 	};
 	const where: Record<string, unknown> = {};
 

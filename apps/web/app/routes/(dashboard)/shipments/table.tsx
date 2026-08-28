@@ -23,6 +23,7 @@ type IShipmentsTable = {
 	emptyText: string;
 	isLoading: boolean;
 	onArrivalSortChange: (arrivalSort: ShipmentArrivalSort | null) => void;
+	onUpdated: () => Promise<void>;
 };
 
 const getColumns = (arrivalSort: ShipmentArrivalSort | null): TableProps<Shipment>["columns"] => [
@@ -60,6 +61,7 @@ const Table: FC<IShipmentsTable> = ({
 	emptyText,
 	isLoading,
 	onArrivalSortChange,
+	onUpdated,
 }) => {
 	const [selectedShipment, setSelectedShipment] = useState<Shipment | null>(null);
 
@@ -108,7 +110,7 @@ const Table: FC<IShipmentsTable> = ({
 				onRow={getRowProps}
 			/>
 
-			<Drawer shipment={selectedShipment} onClose={handleClose} />
+			<Drawer shipment={selectedShipment} onClose={handleClose} onUpdated={onUpdated} />
 		</>
 	);
 };
