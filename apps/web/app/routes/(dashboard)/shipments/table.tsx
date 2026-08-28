@@ -1,7 +1,7 @@
 import { Table as AntTable, type TableProps, Tag } from "antd";
 import { type FC, useState } from "react";
 
-import { SHIPMENT_STATUS, type Shipment } from "@web/types/shipments";
+import { SHIPMENT_STATUS, type Shipment } from "@repo/value";
 
 import Drawer from "./drawer";
 import { SHIPMENT_STATUS_LABELS, type ShipmentArrivalSort } from "./utils";

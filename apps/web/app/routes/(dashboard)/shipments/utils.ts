@@ -7,8 +7,8 @@ import {
 	parseAsStringEnum,
 } from "nuqs";
 
+import { SHIPMENT_STATUS } from "@repo/value";
 import type { ShipmentArrivalSortParam } from "@web/actions/dashboard/get-many-shipments";
-import { SHIPMENT_STATUS } from "@web/types/shipments";
 
 export type ShipmentArrivalSort = "ascend" | "descend";
 

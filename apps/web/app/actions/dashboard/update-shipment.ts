@@ -1,8 +1,8 @@
 import { type InferOutput, object, parse, pick } from "valibot";
 
+import { ShipmentSchema } from "@repo/value";
 import { type ACTION_TAG, INITIAL_ACTION_STATUS } from "@web/libs/actions";
 import { fetchValidated } from "@web/libs/fetch";
-import { ShipmentSchema } from "@web/types/shipments";
 import { ACTION_STATUS } from "@web/types/system";
 
 const UpdateShipmentFieldsSchema = pick(ShipmentSchema, [

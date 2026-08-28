@@ -4,9 +4,17 @@
  	"globalDependencies": [".env"],
  	"envMode": "loose",
   "tasks": {
-    "dev": {
-      "cache": false,
-      "persistent": true
-    }
+    "build": {
+			"dependsOn": ["^build"],
+			"cache": true,
+			"outputs": ["dist/**"]
+		},
+		"dev": {
+			"dependsOn": ["^build"],
+			"cache": false,
+			"persistent": true,
+			"interruptible": true
+		},
+    "clean": {}
   }
 }

@@ -2,10 +2,10 @@ import { Alert, Drawer as AntDrawer, Button, DatePicker, Form, Input, Select } f
 import dayjs, { type Dayjs } from "dayjs";
 import { type FC, useEffect, useState } from "react";
 
+import type { Shipment } from "@repo/value";
 import { updateShipment } from "@web/actions/dashboard/update-shipment";
 import { ACTION_TAG } from "@web/libs/actions";
 import { useEnhancedSWRMutation } from "@web/libs/swr";
-import type { Shipment } from "@web/types/shipments";
 import { ACTION_STATUS } from "@web/types/system";
 
 import { SHIPMENT_STATUS_OPTIONS } from "./utils";

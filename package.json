@@ -6,6 +6,7 @@
 		"packages/*"
 	],
 	"scripts": {
+		"clean": "turbo clean",
 		"dev": "dotenv -- turbo run dev",
 		"lint:apply": "biome check --write --unsafe .",
 		"lint:check": "biome check .",

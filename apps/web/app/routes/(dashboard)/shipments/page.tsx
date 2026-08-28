@@ -2,6 +2,7 @@ import { DatePicker, Input, Select } from "antd";
 import { useQueryStates } from "nuqs";
 import { is } from "valibot";
 
+import type { SHIPMENT_STATUS } from "@repo/value";
 import {
 	GetManyShipmentsResponseSchema,
 	getManyShipments,
@@ -9,7 +10,6 @@ import {
 } from "@web/actions/dashboard/get-many-shipments";
 import { ACTION_TAG } from "@web/libs/actions";
 import { useEnhancedSWR } from "@web/libs/swr";
-import type { SHIPMENT_STATUS } from "@web/types/shipments";
 
 import Pagination from "./pagination";
 import Table from "./table";

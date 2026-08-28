@@ -1,8 +1,8 @@
 import { array, type InferOutput, nullable, number, object } from "valibot";
 
+import { type SHIPMENT_STATUS, ShipmentSchema } from "@repo/value";
 import { type ACTION_TAG, INITIAL_ACTION_STATUS } from "@web/libs/actions";
 import { fetchValidated } from "@web/libs/fetch";
-import { type SHIPMENT_STATUS, ShipmentSchema } from "@web/types/shipments";
 import { ACTION_STATUS } from "@web/types/system";
 
 export const GetManyShipmentsResponseSchema = object({
