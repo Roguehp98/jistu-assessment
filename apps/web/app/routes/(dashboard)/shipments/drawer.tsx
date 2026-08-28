@@ -1,5 +1,6 @@
-import { Alert, Drawer as AntDrawer, Button, Form, Input, Select } from "antd";
-import type { FC } from "react";
+import { Alert, Drawer as AntDrawer, Button, DatePicker, Form, Input, Select } from "antd";
+import dayjs, { type Dayjs } from "dayjs";
+import { type FC, useEffect, useState } from "react";
 
 import { updateShipment } from "@web/actions/dashboard/update-shipment";
 import { ACTION_TAG } from "@web/libs/actions";
@@ -13,7 +14,24 @@ const dateFormatter = new Intl.DateTimeFormat("en", {
 	dateStyle: "medium",
 	timeStyle: "short",
 });
+const formatDateTime = (date: Dayjs) => dateFormatter.format(date.toDate());
 const UPDATE_SHIPMENT_KEY: [ACTION_TAG.UPDATE_SHIPMENT] = [ACTION_TAG.UPDATE_SHIPMENT];
+
+const getNumbersBefore = (value: number) => Array.from({ length: value }, (_, index) => index);
+
+const getDisabledTime = (date: Dayjs | null, arrivalDate: Dayjs) => {
+	if (!date?.isSame(arrivalDate, "day")) return {};
+
+	return {
+		disabledHours: () => getNumbersBefore(arrivalDate.hour()),
+		disabledMinutes: (hour: number) =>
+			hour === arrivalDate.hour() ? getNumbersBefore(arrivalDate.minute()) : [],
+		disabledSeconds: (hour: number, minute: number) =>
+			hour === arrivalDate.hour() && minute === arrivalDate.minute()
+				? getNumbersBefore(arrivalDate.second())
+				: [],
+	};
+};
 
 type IDrawer = {
 	shipment: Shipment | null;
@@ -25,7 +43,7 @@ type ShipmentFormValues = {
 	assignment_id?: string | null;
 	arrival_date: string;
 	client_name: string;
-	delivery_by_date: string;
+	delivery_by_date: Dayjs;
 	lat: string;
 	lng: string;
 	status: Shipment["status"];
@@ -36,7 +54,7 @@ const getFormValues = (shipment: Shipment): ShipmentFormValues => ({
 	assignment_id: shipment.assignment_id,
 	arrival_date: dateFormatter.format(new Date(shipment.arrival_date)),
 	client_name: shipment.client_name,
-	delivery_by_date: shipment.delivery_by_date,
+	delivery_by_date: dayjs(shipment.delivery_by_date),
 	lat: String(shipment.lat),
 	lng: String(shipment.lng),
 	status: shipment.status,
@@ -48,6 +66,10 @@ const Drawer: FC<IDrawer> = ({ shipment, onClose, onUpdated }) => {
 		UPDATE_SHIPMENT_KEY,
 		updateShipment,
 	);
+	const [form] = Form.useForm<ShipmentFormValues>();
+	const formValues = Form.useWatch([], form);
+	const [canSubmit, setCanSubmit] = useState(false);
+	const arrivalDate = shipment ? dayjs(shipment.arrival_date) : null;
 
 	const handleClose = () => {
 		reset();
@@ -60,7 +82,7 @@ const Drawer: FC<IDrawer> = ({ shipment, onClose, onUpdated }) => {
 		const response = await trigger({
 			shipment,
 			updates: {
-				delivery_by_date: values.delivery_by_date.trim(),
+				delivery_by_date: values.delivery_by_date.toISOString(),
 				lat: Number(values.lat),
 				lng: Number(values.lng),
 				update_at: new Date().toISOString(),
@@ -73,6 +95,29 @@ const Drawer: FC<IDrawer> = ({ shipment, onClose, onUpdated }) => {
 		handleClose();
 	};
 
+	useEffect(() => {
+		if (!shipment || !formValues) {
+			setCanSubmit(false);
+
+			return;
+		}
+
+		let isCurrentValidation = true;
+
+		form.validateFields({ validateOnly: true }).then(
+			() => {
+				if (isCurrentValidation) setCanSubmit(true);
+			},
+			() => {
+				if (isCurrentValidation) setCanSubmit(false);
+			},
+		);
+
+		return () => {
+			isCurrentValidation = false;
+		};
+	}, [form, formValues, shipment]);
+
 	return (
 		<AntDrawer
 			destroyOnHidden
@@ -82,7 +127,7 @@ const Drawer: FC<IDrawer> = ({ shipment, onClose, onUpdated }) => {
 						Cancel
 					</Button>
 					<Button
-						disabled={!shipment}
+						disabled={!shipment || !canSubmit}
 						form="shipment-form"
 						htmlType="submit"
 						loading={isMutating}
@@ -100,6 +145,7 @@ const Drawer: FC<IDrawer> = ({ shipment, onClose, onUpdated }) => {
 			{shipment && (
 				<Form
 					key={shipment.id}
+					form={form}
 					id="shipment-form"
 					initialValues={getFormValues(shipment)}
 					layout="vertical"
@@ -109,7 +155,7 @@ const Drawer: FC<IDrawer> = ({ shipment, onClose, onUpdated }) => {
 					{isError && (
 						<Alert
 							className="mb-4"
-							message={data?.message || "Unable to update shipment. Please try again."}
+							title={data?.message || "Unable to update shipment. Please try again."}
 							showIcon
 							type="error"
 						/>
@@ -130,9 +176,29 @@ const Drawer: FC<IDrawer> = ({ shipment, onClose, onUpdated }) => {
 					<Form.Item
 						label="Delivery by date"
 						name="delivery_by_date"
-						rules={[{ required: true, whitespace: true, message: "Delivery by date is required" }]}
+						rules={[
+							{ required: true, message: "Delivery by date is required" },
+							{
+								validator: (_, value: Dayjs | null) => {
+									if (!value || !arrivalDate || !value.isBefore(arrivalDate))
+										return Promise.resolve();
+
+									return Promise.reject(
+										new Error("Delivery by date cannot be before arrival date"),
+									);
+								},
+							},
+						]}
 					>
-						<Input />
+						<DatePicker
+							className="w-full"
+							disabledDate={(date) => arrivalDate?.isAfter(date, "day") ?? false}
+							format={formatDateTime}
+							showTime={{
+								disabledTime: (date) => (arrivalDate ? getDisabledTime(date, arrivalDate) : {}),
+								format: "h:mm A",
+							}}
+						/>
 					</Form.Item>
 
 					<Form.Item label="Warehouse ID" name="warehouse_id">
