@@ -1,0 +1,34 @@
+meta {
+  name: List assignments
+  type: http
+  seq: 9
+}
+
+get {
+  url: {{baseUrl}}/api/assignments?status=OPEN&_sort=label
+  body: none
+  auth: none
+}
+
+params:query {
+  status: OPEN
+  _sort: label
+}
+
+docs {
+  ```ts
+  type Assignment = {
+    id: string;
+    label: string;
+    status: "OPEN" | "COMPLETED";
+    clients: string[];
+    shipment_count: number;
+  };
+
+  type Response = {
+    data: { data: Assignment[] };
+    message: string;
+    status: "SUCCESS";
+  };
+  ```
+}

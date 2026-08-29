@@ -1,0 +1,45 @@
+meta {
+  name: Get assignment
+  type: http
+  seq: 10
+}
+
+get {
+  url: {{baseUrl}}/api/assignments/as_001
+  body: none
+  auth: none
+}
+
+docs {
+  ```ts
+  type Shipment = {
+    id: string;
+    client_name: string;
+    label: string;
+    status: "OPEN" | "IN_TRANSIT" | "DELIVERED";
+    arrival_date: string;
+    delivery_by_date: string;
+    eta: string;
+    update_at: string;
+    warehouse_id: string;
+    assignment_id: string | null;
+    lat: number;
+    lng: number;
+  };
+
+  type Assignment = {
+    id: string;
+    label: string;
+    status: "OPEN" | "COMPLETED";
+    clients: string[];
+    shipment_count: number;
+    shipments: Shipment[];
+  };
+
+  type Response = {
+    data: { data: Assignment };
+    message: string;
+    status: "SUCCESS";
+  };
+  ```
+}

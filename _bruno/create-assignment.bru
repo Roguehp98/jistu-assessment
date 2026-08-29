@@ -1,0 +1,47 @@
+meta {
+  name: Create assignment
+  type: http
+  seq: 11
+}
+
+post {
+  url: {{baseUrl}}/api/assignments
+  body: json
+  auth: none
+}
+
+headers {
+  content-type: application/json
+}
+
+body:json {
+  {
+    "label": "TEST-ASSIGNMENT"
+  }
+}
+
+script:post-response {
+  bru.setVar("createdAssignmentId", res.getBody().data.data.id);
+}
+
+docs {
+  ```ts
+  type Request = {
+    label: string;
+  };
+
+  type Assignment = {
+    id: string;
+    label: string;
+    status: "OPEN";
+    clients: [];
+    shipment_count: 0;
+  };
+
+  type Response = {
+    data: { data: Assignment };
+    message: string;
+    status: "SUCCESS";
+  };
+  ```
+}
