@@ -73,8 +73,13 @@ export const deleteShipment = factory.createHandlers(
 	async (c) => {
 		const db = c.var.db;
 		const { id } = c.req.valid("param");
-		const shipment = await deleteShipmentService(db, id);
+		const result = await deleteShipmentService(db, id);
 
-		return shipment ? c.json(success({ data: shipment })) : c.json(error(null, "Not Found"), 404);
+		if (!result.success && result.error === "Not Found")
+			return c.json(error(null, result.error), 404);
+
+		return result.success
+			? c.json(success({ data: result.shipment }))
+			: c.json(error(null, result.error), 422);
 	},
 );
