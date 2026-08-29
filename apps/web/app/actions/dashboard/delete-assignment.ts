@@ -1,9 +1,8 @@
 import { type InferOutput, literal, object, parse, pick, string } from "valibot";
 
-import { AssignmentSchema } from "@repo/value";
+import { ACTION_STATUS, AssignmentSchema } from "@repo/value";
 import type { ACTION_TAG } from "@web/libs/actions";
 import { fetchValidated } from "@web/libs/fetch";
-import { ACTION_STATUS } from "@web/types/system";
 
 export const DeleteAssignmentInputSchema = pick(AssignmentSchema, ["id"]);
 

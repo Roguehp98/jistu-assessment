@@ -1,4 +1,4 @@
-import { ACTION_STATUS } from "@web/types/system";
+import { ACTION_STATUS } from "@repo/value";
 
 export const INITIAL_ACTION_STATUS = { message: "", status: ACTION_STATUS.NORMAL };
 

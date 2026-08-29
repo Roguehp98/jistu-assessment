@@ -1,9 +1,8 @@
 import { array, intersect, literal, object, string } from "valibot";
 
-import { AssignmentSchema, ShipmentSchema } from "@repo/value";
+import { ACTION_STATUS, AssignmentSchema, ShipmentSchema } from "@repo/value";
 import type { ACTION_TAG } from "@web/libs/actions";
 import { fetchValidated } from "@web/libs/fetch";
-import { ACTION_STATUS } from "@web/types/system";
 
 export const AssignmentDetailSchema = intersect([
 	AssignmentSchema,

@@ -1,10 +1,10 @@
 import { Alert, Button, Form, Input, Modal } from "antd";
 import { type FC, useEffect, useState } from "react";
 
+import { ACTION_STATUS } from "@repo/value";
 import { createAssignment } from "@web/actions/dashboard/create-assignment";
 import { ACTION_TAG } from "@web/libs/actions";
 import { useEnhancedSWRMutation } from "@web/libs/swr";
-import { ACTION_STATUS } from "@web/types/system";
 
 const CREATE_ASSIGNMENT_KEY: [ACTION_TAG.CREATE_ASSIGNMENT] = [ACTION_TAG.CREATE_ASSIGNMENT];
 

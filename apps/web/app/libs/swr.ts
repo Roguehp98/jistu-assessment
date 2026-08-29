@@ -10,7 +10,7 @@ import useSWRMutation, {
 } from "swr/mutation";
 import { ValiError } from "valibot";
 
-import { ACTION_STATUS } from "@web/types/system";
+import { ACTION_STATUS } from "@repo/value";
 
 import { INITIAL_ACTION_STATUS } from "./actions";
 
