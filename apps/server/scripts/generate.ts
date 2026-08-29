@@ -39,10 +39,18 @@ const generateAssignmentSeeds = (): AssignmentSeed[] =>
 			index < assignmentLocations.length / 2 ? ASSIGNMENT_STATUS.OPEN : ASSIGNMENT_STATUS.COMPLETED,
 	}));
 
-const generateAssignments = (assignmentSeeds: AssignmentSeed[], shipments: Shipment[]) =>
+const generateAssignments = (
+	assignmentSeeds: AssignmentSeed[],
+	shipments: Shipment[],
+	generatedAt: string,
+) =>
 	assignmentSeeds.map((assignment) => {
 		const assignmentShipments = shipments.filter(
 			(shipment) => shipment.assignment_id === assignment.id,
+		);
+		const latestShipmentUpdatedAt = assignmentShipments.reduce(
+			(latest, shipment) => (shipment.updated_at > latest ? shipment.updated_at : latest),
+			"",
 		);
 
 		return {
@@ -51,6 +59,7 @@ const generateAssignments = (assignmentSeeds: AssignmentSeed[], shipments: Shipm
 			status: assignment.status,
 			clients: [...new Set(assignmentShipments.map((shipment) => shipment.client_name))],
 			shipment_count: assignmentShipments.length,
+			updated_at: latestShipmentUpdatedAt || generatedAt,
 		};
 	});
 
@@ -124,7 +133,7 @@ const generateShipments = (assignmentSeeds: AssignmentSeed[]): Shipment[] => {
 			arrival_date: arrival.toISOString(),
 			delivery_by_date: deliveryBy.toISOString(),
 			eta: eta.toISOString(),
-			update_at: updatedAt.toISOString(),
+			updated_at: updatedAt.toISOString(),
 			warehouse_id: "581",
 			assignment_id: assignment?.id ?? null,
 			lat: coordinates.lat,
@@ -138,9 +147,10 @@ const generateShipments = (assignmentSeeds: AssignmentSeed[]): Shipment[] => {
 /* Output */
 
 const shipmentsPath = fileURLToPath(new URL("../shipments.json", import.meta.url));
+const generatedAt = new Date().toISOString();
 const assignmentSeeds = generateAssignmentSeeds();
 const shipments = generateShipments(assignmentSeeds);
-const assignments = generateAssignments(assignmentSeeds, shipments);
+const assignments = generateAssignments(assignmentSeeds, shipments, generatedAt);
 
 const result = { statuses, assignments, shipments };
 writeFileSync(shipmentsPath, JSON.stringify(result, null, 2));

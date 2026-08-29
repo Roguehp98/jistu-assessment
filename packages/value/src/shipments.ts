@@ -14,7 +14,7 @@ export const ShipmentSchema = object({
 	arrival_date: string(),
 	delivery_by_date: string(),
 	eta: string(),
-	update_at: string(),
+	updated_at: string(),
 	warehouse_id: string(),
 	assignment_id: optional(nullable(string()), null),
 	lat: number(),

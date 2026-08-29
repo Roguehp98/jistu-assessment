@@ -190,7 +190,6 @@ const Drawer: FC<IDrawer> = ({ shipment, onClose, onUpdated }) => {
 				delivery_by_date: values.delivery_by_date.toISOString(),
 				lat: Number(values.lat),
 				lng: Number(values.lng),
-				update_at: new Date().toISOString(),
 			},
 		});
 

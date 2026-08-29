@@ -5,7 +5,7 @@ meta {
 }
 
 get {
-  url: {{baseUrl}}/api/shipments?_page=1&_per_page=25&_sort=-update_at
+  url: {{baseUrl}}/api/shipments?_page=1&_per_page=25&_sort=-updated_at
   body: none
   auth: none
 }
@@ -13,7 +13,7 @@ get {
 params:query {
   _page: 1
   _per_page: 25
-  _sort: -update_at
+  _sort: -updated_at
 }
 
 docs {
@@ -26,7 +26,7 @@ docs {
     arrival_date: string;
     delivery_by_date: string;
     eta: string;
-    update_at: string;
+    updated_at: string;
     warehouse_id: string;
     assignment_id: string | null;
     lat: number;

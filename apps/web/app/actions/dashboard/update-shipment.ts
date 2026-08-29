@@ -5,12 +5,7 @@ import type { ACTION_TAG } from "@web/libs/actions";
 import { fetchValidated } from "@web/libs/fetch";
 import { ACTION_STATUS } from "@web/types/system";
 
-const UpdateShipmentFieldsSchema = pick(ShipmentSchema, [
-	"delivery_by_date",
-	"lat",
-	"lng",
-	"update_at",
-]);
+const UpdateShipmentFieldsSchema = pick(ShipmentSchema, ["delivery_by_date", "lat", "lng"]);
 
 export const UpdateShipmentInputSchema = object({
 	shipment: ShipmentSchema,
@@ -39,7 +34,6 @@ export const updateShipment = async (
 			arrival_date: shipment.arrival_date,
 			delivery_by_date: updates.delivery_by_date,
 			eta: shipment.eta,
-			update_at: updates.update_at,
 			warehouse_id: shipment.warehouse_id,
 			lat: updates.lat,
 			lng: updates.lng,
