@@ -1,4 +1,13 @@
-import { Alert, Drawer as AntDrawer, Button, DatePicker, Form, Input, Select } from "antd";
+import {
+	Alert,
+	Drawer as AntDrawer,
+	Button,
+	DatePicker,
+	Form,
+	type FormInstance,
+	Input,
+	Select,
+} from "antd";
 import dayjs, { type Dayjs } from "dayjs";
 import { type FC, useEffect, useState } from "react";
 
@@ -61,6 +70,103 @@ const getFormValues = (shipment: Shipment): ShipmentFormValues => ({
 	warehouse_id: shipment.warehouse_id,
 });
 
+type IShipmentForm = {
+	errorMessage?: string;
+	form: FormInstance<ShipmentFormValues>;
+	isError: boolean;
+	shipment: Shipment;
+	onSubmit: (values: ShipmentFormValues) => Promise<void>;
+};
+
+const ShipmentForm: FC<IShipmentForm> = ({ errorMessage, form, isError, shipment, onSubmit }) => {
+	const arrivalDate = dayjs(shipment.arrival_date);
+
+	return (
+		<Form
+			form={form}
+			id="shipment-form"
+			initialValues={getFormValues(shipment)}
+			layout="vertical"
+			preserve={false}
+			onFinish={onSubmit}
+		>
+			{isError && (
+				<Alert
+					className="mb-4"
+					title={errorMessage || "Unable to update shipment. Please try again."}
+					showIcon
+					type="error"
+				/>
+			)}
+
+			<Form.Item label="Client name" name="client_name">
+				<Input disabled />
+			</Form.Item>
+
+			<Form.Item label="Status" name="status">
+				<Select disabled options={SHIPMENT_STATUS_OPTIONS} />
+			</Form.Item>
+
+			<Form.Item label="Arrival date" name="arrival_date">
+				<Input disabled />
+			</Form.Item>
+
+			<Form.Item
+				label="Delivery by date"
+				name="delivery_by_date"
+				rules={[
+					{ required: true, message: "Delivery by date is required" },
+					{
+						validator: (_, value: Dayjs | null) => {
+							if (!value || !value.isBefore(arrivalDate)) return Promise.resolve();
+
+							return Promise.reject(new Error("Delivery by date cannot be before arrival date"));
+						},
+					},
+				]}
+			>
+				<DatePicker
+					className="w-full"
+					disabledDate={(date) => arrivalDate.isAfter(date, "day")}
+					format={formatDateTime}
+					showTime={{
+						disabledTime: (date) => getDisabledTime(date, arrivalDate),
+						format: "h:mm A",
+					}}
+				/>
+			</Form.Item>
+
+			<Form.Item label="Warehouse ID" name="warehouse_id">
+				<Input disabled />
+			</Form.Item>
+
+			<Form.Item label="Assignment ID" name="assignment_id">
+				<Input disabled />
+			</Form.Item>
+
+			<div className="grid grid-cols-2 gap-4">
+				<Form.Item
+					className="mb-0"
+					label="Latitude"
+					name="lat"
+					rules={[{ required: true, message: "Latitude is required" }]}
+				>
+					<Input inputMode="decimal" max={90} min={-90} step="any" type="number" />
+				</Form.Item>
+
+				<Form.Item
+					className="mb-0"
+					label="Longitude"
+					name="lng"
+					rules={[{ required: true, message: "Longitude is required" }]}
+				>
+					<Input inputMode="decimal" max={180} min={-180} step="any" type="number" />
+				</Form.Item>
+			</div>
+		</Form>
+	);
+};
+
 const Drawer: FC<IDrawer> = ({ shipment, onClose, onUpdated }) => {
 	const { data, isError, isMutating, reset, trigger } = useEnhancedSWRMutation(
 		UPDATE_SHIPMENT_KEY,
@@ -69,7 +175,6 @@ const Drawer: FC<IDrawer> = ({ shipment, onClose, onUpdated }) => {
 	const [form] = Form.useForm<ShipmentFormValues>();
 	const formValues = Form.useWatch([], form);
 	const [canSubmit, setCanSubmit] = useState(false);
-	const arrivalDate = shipment ? dayjs(shipment.arrival_date) : null;
 
 	const handleClose = () => {
 		reset();
@@ -143,92 +248,14 @@ const Drawer: FC<IDrawer> = ({ shipment, onClose, onUpdated }) => {
 			onClose={handleClose}
 		>
 			{shipment && (
-				<Form
+				<ShipmentForm
 					key={shipment.id}
+					errorMessage={data?.message}
 					form={form}
-					id="shipment-form"
-					initialValues={getFormValues(shipment)}
-					layout="vertical"
-					preserve={false}
-					onFinish={handleSubmit}
-				>
-					{isError && (
-						<Alert
-							className="mb-4"
-							title={data?.message || "Unable to update shipment. Please try again."}
-							showIcon
-							type="error"
-						/>
-					)}
-
-					<Form.Item label="Client name" name="client_name">
-						<Input disabled />
-					</Form.Item>
-
-					<Form.Item label="Status" name="status">
-						<Select disabled options={SHIPMENT_STATUS_OPTIONS} />
-					</Form.Item>
-
-					<Form.Item label="Arrival date" name="arrival_date">
-						<Input disabled />
-					</Form.Item>
-
-					<Form.Item
-						label="Delivery by date"
-						name="delivery_by_date"
-						rules={[
-							{ required: true, message: "Delivery by date is required" },
-							{
-								validator: (_, value: Dayjs | null) => {
-									if (!value || !arrivalDate || !value.isBefore(arrivalDate))
-										return Promise.resolve();
-
-									return Promise.reject(
-										new Error("Delivery by date cannot be before arrival date"),
-									);
-								},
-							},
-						]}
-					>
-						<DatePicker
-							className="w-full"
-							disabledDate={(date) => arrivalDate?.isAfter(date, "day") ?? false}
-							format={formatDateTime}
-							showTime={{
-								disabledTime: (date) => (arrivalDate ? getDisabledTime(date, arrivalDate) : {}),
-								format: "h:mm A",
-							}}
-						/>
-					</Form.Item>
-
-					<Form.Item label="Warehouse ID" name="warehouse_id">
-						<Input disabled />
-					</Form.Item>
-
-					<Form.Item label="Assignment ID" name="assignment_id">
-						<Input disabled />
-					</Form.Item>
-
-					<div className="grid grid-cols-2 gap-4">
-						<Form.Item
-							className="mb-0"
-							label="Latitude"
-							name="lat"
-							rules={[{ required: true, message: "Latitude is required" }]}
-						>
-							<Input inputMode="decimal" max={90} min={-90} step="any" type="number" />
-						</Form.Item>
-
-						<Form.Item
-							className="mb-0"
-							label="Longitude"
-							name="lng"
-							rules={[{ required: true, message: "Longitude is required" }]}
-						>
-							<Input inputMode="decimal" max={180} min={-180} step="any" type="number" />
-						</Form.Item>
-					</div>
-				</Form>
+					isError={isError}
+					shipment={shipment}
+					onSubmit={handleSubmit}
+				/>
 			)}
 		</AntDrawer>
 	);

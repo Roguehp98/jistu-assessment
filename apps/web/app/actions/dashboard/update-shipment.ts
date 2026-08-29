@@ -1,7 +1,7 @@
-import { type InferOutput, object, parse, pick } from "valibot";
+import { type InferOutput, literal, object, parse, pick, string } from "valibot";
 
 import { ShipmentSchema } from "@repo/value";
-import { type ACTION_TAG, INITIAL_ACTION_STATUS } from "@web/libs/actions";
+import type { ACTION_TAG } from "@web/libs/actions";
 import { fetchValidated } from "@web/libs/fetch";
 import { ACTION_STATUS } from "@web/types/system";
 
@@ -19,17 +19,19 @@ export const UpdateShipmentInputSchema = object({
 
 export type UpdateShipmentInput = InferOutput<typeof UpdateShipmentInputSchema>;
 
-export const initialUpdateShipmentState = {
-	...INITIAL_ACTION_STATUS,
-	data: null,
-};
+const UpdateShipmentApiResponseSchema = object({
+	data: object({ data: ShipmentSchema }),
+	message: string(),
+	status: literal(ACTION_STATUS.SUCCESS),
+});
 
 export const updateShipment = async (
 	_: [ACTION_TAG.UPDATE_SHIPMENT],
 	{ arg }: { arg: UpdateShipmentInput },
 ) => {
 	const { shipment, updates } = parse(UpdateShipmentInputSchema, arg);
-	const data = await fetchValidated(ShipmentSchema, `/shipments/${shipment.id}`, {
+
+	return await fetchValidated(UpdateShipmentApiResponseSchema, `/api/shipments/${shipment.id}`, {
 		body: {
 			client_name: shipment.client_name,
 			label: shipment.label,
@@ -44,10 +46,4 @@ export const updateShipment = async (
 		},
 		method: "PUT",
 	});
-
-	return {
-		...INITIAL_ACTION_STATUS,
-		status: ACTION_STATUS.SUCCESS,
-		data,
-	};
 };

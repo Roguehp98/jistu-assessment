@@ -1,7 +1,7 @@
-import { array, type InferOutput, nullable, number, object } from "valibot";
+import { array, literal, nullable, number, object, string } from "valibot";
 
 import { type SHIPMENT_STATUS, ShipmentSchema } from "@repo/value";
-import { type ACTION_TAG, INITIAL_ACTION_STATUS } from "@web/libs/actions";
+import type { ACTION_TAG } from "@web/libs/actions";
 import { fetchValidated } from "@web/libs/fetch";
 import { ACTION_STATUS } from "@web/types/system";
 
@@ -15,7 +15,12 @@ export const GetManyShipmentsResponseSchema = object({
 	data: array(ShipmentSchema),
 });
 
-type GetManyShipmentsResponse = InferOutput<typeof GetManyShipmentsResponseSchema>;
+const GetManyShipmentsApiResponseSchema = object({
+	data: object({ data: GetManyShipmentsResponseSchema }),
+	message: string(),
+	status: literal(ACTION_STATUS.SUCCESS),
+});
+
 export type ShipmentArrivalSortParam = "arrival_date" | "-arrival_date";
 
 type GetManyShipmentsQueryOptions = {
@@ -26,21 +31,6 @@ type GetManyShipmentsQueryOptions = {
 	perPage: number;
 	search: string;
 	status: SHIPMENT_STATUS[];
-};
-
-const initialGetManyShipmentsData: GetManyShipmentsResponse = {
-	first: 0,
-	prev: null,
-	next: null,
-	last: 0,
-	pages: 0,
-	items: 0,
-	data: [],
-};
-
-export const initialGetManyShipmentsState = {
-	...INITIAL_ACTION_STATUS,
-	data: initialGetManyShipmentsData,
 };
 
 const getManyShipmentsQuery = ({
@@ -114,11 +104,7 @@ export const getManyShipments = async ([
 		status,
 	});
 
-	const data = await fetchValidated(GetManyShipmentsResponseSchema, "/shipments", { query });
-
-	return {
-		...INITIAL_ACTION_STATUS,
-		status: ACTION_STATUS.SUCCESS, // temporary added status because `json-server` doesn't return status on result when failed
-		data,
-	};
+	return await fetchValidated(GetManyShipmentsApiResponseSchema, "/api/shipments", {
+		query,
+	});
 };
