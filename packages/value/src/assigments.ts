@@ -11,6 +11,7 @@ export const AssignmentSchema = object({
 	status: enum_(ASSIGNMENT_STATUS),
 	clients: array(string()),
 	shipment_count: number(),
+	updated_at: string(),
 });
 
 export type Assignment = InferOutput<typeof AssignmentSchema>;

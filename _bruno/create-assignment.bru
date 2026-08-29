@@ -1,7 +1,7 @@
 meta {
   name: Create assignment
   type: http
-  seq: 11
+  seq: 13
 }
 
 post {
@@ -36,6 +36,7 @@ docs {
     status: "OPEN";
     clients: [];
     shipment_count: 0;
+    updated_at: string;
   };
 
   type Response = {

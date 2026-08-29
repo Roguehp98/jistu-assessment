@@ -1,7 +1,7 @@
 meta {
   name: List assignments
   type: http
-  seq: 9
+  seq: 11
 }
 
 get {
@@ -23,6 +23,7 @@ docs {
     status: "OPEN" | "COMPLETED";
     clients: string[];
     shipment_count: number;
+    updated_at: string;
   };
 
   type Response = {

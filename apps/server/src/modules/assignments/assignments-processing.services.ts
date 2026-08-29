@@ -30,6 +30,7 @@ export const createAssignment = (database: Low<IDatabase>, input: CreateAssignme
 			status: ASSIGNMENT_STATUS.OPEN,
 			clients: [],
 			shipment_count: 0,
+			updated_at: new Date().toISOString(),
 		};
 
 		insertAssignment(data.assignments, assignment);

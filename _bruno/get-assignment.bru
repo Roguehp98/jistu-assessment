@@ -1,7 +1,7 @@
 meta {
   name: Get assignment
   type: http
-  seq: 10
+  seq: 12
 }
 
 get {
@@ -20,7 +20,7 @@ docs {
     arrival_date: string;
     delivery_by_date: string;
     eta: string;
-    update_at: string;
+    updated_at: string;
     warehouse_id: string;
     assignment_id: string | null;
     lat: number;
@@ -33,6 +33,7 @@ docs {
     status: "OPEN" | "COMPLETED";
     clients: string[];
     shipment_count: number;
+    updated_at: string;
     shipments: Shipment[];
   };
 
