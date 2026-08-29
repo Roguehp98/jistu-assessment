@@ -9,7 +9,7 @@ Index — detail in linked section.
 - **Libs**: SWR, ahooks, zustand, valibot, ofetch, es-toolkit.
 - **Domains**: auth, dashboard, marketing, standalone. → §Route groups.
 - **State/routing**: Zustand global, SWR server, `nuqs` URL, local React form state, file-route + SSR. → §State + data, §Routing.
-- **Data/utils**: `libs/action` for SWR DTOs; `libs/` first. → §Data actions.
+- **Data/utils**: `libs/actions` for SWR DTOs; `libs/` first. → §Data actions.
 - **Layout**: multi-file page → folder (`x/index.tsx` + kids); single file → flat `x.tsx`; collapse 1-child folders.
 - **Styles**: Tailwind first → §Styling.
 - **Imports (auto)**: React, ahooks, react-router (`use*`, `Outlet`/`Link`/`NavLink`), es-toolkit, `clsx` (as `cn`).
@@ -45,10 +45,10 @@ Strict boundaries, don't blur: **Zustand** global (sparingly) · **SWR** server 
 
 Stack: HTTP `ofetch` · util `es-toolkit` · hooks `ahooks` · val `valibot` · class `clsx` as `cn`.
 
-### Server data (SWR) — `libs/swr.ts`, `libs/action.ts`
+### Server data (SWR) — `libs/swr.ts`, `libs/actions.ts`
 
-- **Action shape** — `actions/<domain>/<verb>-<resource>.ts` exports `initialXxxState` + async fn: GET `(_: [tag]) => fetch(url)`, mutation `(_: [tag], { arg }) => parse(Schema, arg) → fetch(url, POST)`.
-- **`ACTION_TAG`** enum (`libs/action.ts`) = SWR-key SSOT. Tuple: first element = tag, rest = scope.
+- **Action shape** — `actions/<domain>/<verb>-<resource>.ts` exports an async fn: GET `(_: [tag, ...scope]) => fetch(url)`, mutation `(_: [tag], { arg }) => parse(Schema, arg) → fetch(...)`. Return the validated API envelope directly; consumers unwrap it.
+- **`ACTION_TAG`** enum (`libs/actions.ts`) = SWR-key SSOT. Tuple: first element = tag, rest = scope.
 - **Enhanced wrappers** (`useEnhancedSWR`/`Mutation`/`Infinite`) — **never throw**; error normalized to `ACTION_STATUS`, `data` defaults to `INITIAL_ACTION_STATUS` (never `undefined`).
   - Passthrough rule: a `FetchError` whose `status` is already in `ACTION_STATUS` is forwarded verbatim; else `error.default`, `ValiError` → `error.validation`.
 - `revalidateOnFocus`/`OnReconnect` are **PROD-only**. `clearSWRCache` wiped before login (paired with PostHog/Sentry reset in `use-auth`).
