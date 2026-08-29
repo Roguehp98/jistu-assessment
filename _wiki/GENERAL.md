@@ -7,7 +7,7 @@ Repo-wide static info. Commands → [COMMANDS.md](COMMANDS.md).
 | Area     | Stack                       | Path           |
 | -------- | --------------------------- | -------------- |
 | Web      | React Router 7 SSR (Vite)   | `apps/web/`    |
-| Server   | `json-server` for fake data | `apps/server/` |
+| Server   | Hono + LowDB                | `apps/server/` |
 | API SSOT | Bruno collection            | `_bruno/`      |
 | Docs     | Wiki (deep dives)           | `_wiki/`       |
 
