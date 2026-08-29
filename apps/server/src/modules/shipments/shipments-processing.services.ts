@@ -11,14 +11,14 @@ import {
 import type { IDatabase } from "@server/types/db";
 import { updateDatabase } from "@server/utils/db";
 
+import type { createShipmentSchema, updateShipmentSchema } from "./shipments.schema";
 import {
 	findShipment,
 	getNextShipmentId,
 	insertShipment,
 	removeShipment,
 	replaceShipment,
-} from "./shipment.services";
-import type { createShipmentSchema, updateShipmentSchema } from "./shipments.schema";
+} from "./shipments.services";
 
 type CreateShipmentInput = InferOutput<typeof createShipmentSchema>;
 type UpdateShipmentInput = InferOutput<typeof updateShipmentSchema>;
