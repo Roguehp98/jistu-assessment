@@ -8,7 +8,8 @@
 			"!**/dist",
 			"!**/.react-router",
 			"!**/auto-imports.d.ts",
-			"!**/build"
+			"!**/build",
+			"!**/apps/server/shipments.json"
 		]
 	},
 	"assist": {
