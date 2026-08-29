@@ -5,6 +5,7 @@ import { DASHBOARD_ROUTES } from "./libs/route";
 const routes = [
 	/* DASHBOARD */
 	layout("routes/(dashboard)/layout.tsx", [
+		route(DASHBOARD_ROUTES.ASSIGNMENTS.path, "routes/(dashboard)/assignments/page.tsx"),
 		route(DASHBOARD_ROUTES.SHIPMENTS.path, "routes/(dashboard)/shipments/page.tsx"),
 	]),
 ];
