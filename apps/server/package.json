@@ -3,12 +3,18 @@
 	"type": "module",
 	"scripts": {
 		"predev": "tsx scripts/generate-data.ts",
-		"dev": "json-server shipments.json --port 3001",
-		"generate": "tsx scripts/generate.ts"
+		"dev": "tsx watch src/index.ts",
+		"generate": "tsx scripts/generate.ts",
+		"start": "tsx src/index.ts",
+		"typecheck": "tsc --noEmit"
 	},
 	"dependencies": {
+		"@hono/node-server": "2.1.1",
+		"@hono/standard-validator": "^0.4.0",
 		"@repo/value": "*",
-		"json-server": "^1.0.0-beta.15"
+		"hono": "4.13.5",
+		"lowdb": "7.0.1",
+		"valibot": "1.4.2"
 	},
 	"devDependencies": {
 		"@types/node": "^26.1.1",

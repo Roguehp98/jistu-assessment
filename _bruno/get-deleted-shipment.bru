@@ -5,7 +5,7 @@ meta {
 }
 
 get {
-  url: {{baseUrl}}/shipments/{{createdShipmentId}}
+  url: {{baseUrl}}/api/shipments/{{createdShipmentId}}
   body: none
   auth: none
 }
@@ -13,7 +13,9 @@ get {
 docs {
   ```ts
   type Response = {
-    error: "Not Found";
+    data: null;
+    message: "Not Found";
+    status: "ERROR";
   };
   ```
 }

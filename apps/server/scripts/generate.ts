@@ -144,4 +144,4 @@ const assignments = generateAssignments(assignmentSeeds, shipments);
 
 const result = { statuses, assignments, shipments };
 writeFileSync(shipmentsPath, JSON.stringify(result, null, 2));
-console.log("Data generated succesfully");
+console.log("Data generated successfully");

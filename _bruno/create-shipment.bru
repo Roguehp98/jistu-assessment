@@ -5,7 +5,7 @@ meta {
 }
 
 post {
-  url: {{baseUrl}}/shipments
+  url: {{baseUrl}}/api/shipments
   body: json
   auth: none
 }
@@ -24,18 +24,19 @@ body:json {
     "eta": "2026-08-27T00:00:00.000Z",
     "update_at": "2026-08-28T00:00:00.000Z",
     "warehouse_id": "581",
+    "assignment_id": null,
     "lat": 32.75,
     "lng": -96.95
   }
 }
 
 script:post-response {
-  bru.setVar("createdShipmentId", res.getBody().id);
+  bru.setVar("createdShipmentId", res.getBody().data.data.id);
 }
 
 docs {
   ```ts
-  type Response = {
+  type Shipment = {
     id: string;
     client_name: string;
     label: string;
@@ -45,8 +46,15 @@ docs {
     eta: string;
     update_at: string;
     warehouse_id: string;
+    assignment_id: string | null;
     lat: number;
     lng: number;
+  };
+
+  type Response = {
+    data: { data: Shipment };
+    message: string;
+    status: "SUCCESS";
   };
   ```
 }

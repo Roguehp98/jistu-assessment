@@ -5,7 +5,7 @@ meta {
 }
 
 put {
-  url: {{baseUrl}}/shipments/{{createdShipmentId}}
+  url: {{baseUrl}}/api/shipments/{{createdShipmentId}}
   body: json
   auth: none
 }
@@ -24,18 +24,15 @@ body:json {
     "eta": "2026-08-26T12:00:00.000Z",
     "update_at": "2026-08-28T00:00:00.000Z",
     "warehouse_id": "581",
+    "assignment_id": "as_001",
     "lat": 32.75,
     "lng": -96.95
   }
 }
 
-vars:pre-request {
-  createdShipmentId: shp_004
-}
-
 docs {
   ```ts
-  type Response = {
+  type Shipment = {
     id: string;
     client_name: string;
     label: string;
@@ -45,8 +42,15 @@ docs {
     eta: string;
     update_at: string;
     warehouse_id: string;
+    assignment_id: string | null;
     lat: number;
     lng: number;
+  };
+
+  type Response = {
+    data: { data: Shipment };
+    message: string;
+    status: "SUCCESS";
   };
   ```
 }
