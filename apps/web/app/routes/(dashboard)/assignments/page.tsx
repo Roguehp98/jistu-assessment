@@ -7,12 +7,13 @@ import { ACTION_TAG } from "@web/libs/actions";
 import { useEnhancedSWR } from "@web/libs/swr";
 import Pagination from "@web/ui/elements/pagination";
 
-import AssignmentDetail from "./assignment-detail";
 import Header, { type IHeader } from "./header";
 import Table from "./table";
 import { DEFAULT_PAGE_SIZE, PAGE_SIZE_OPTIONS, parser } from "./utils";
 
 export { parser };
+
+const AssignmentDetail = lazy(() => import("./assignment-detail"));
 
 const ErrorMessage = () => (
 	<p
@@ -25,6 +26,7 @@ const ErrorMessage = () => (
 
 const Page = () => {
 	const [selectedAssignment, setSelectedAssignment] = useState<Assignment | null>(null);
+	const [hasOpenedAssignmentDetail, setHasOpenedAssignmentDetail] = useState(false);
 	const [{ page, perPage, search, status }, setQuery] = useQueryStates(parser);
 	const normalizedPage = Math.max(1, page);
 	const normalizedPerPage = PAGE_SIZE_OPTIONS.includes(perPage) ? perPage : DEFAULT_PAGE_SIZE;
@@ -67,6 +69,7 @@ const Page = () => {
 	};
 
 	const handleAssignmentSelect = (assignment: Assignment) => {
+		setHasOpenedAssignmentDetail(true);
 		setSelectedAssignment(assignment);
 	};
 
@@ -108,11 +111,15 @@ const Page = () => {
 
 			<Pagination {...paginationProps} />
 
-			<AssignmentDetail
-				assignment={selectedAssignment}
-				onClose={handleDetailModalClose}
-				onDeleted={mutateGetManyAssignments}
-			/>
+			{hasOpenedAssignmentDetail && (
+				<Suspense fallback={null}>
+					<AssignmentDetail
+						assignment={selectedAssignment}
+						onClose={handleDetailModalClose}
+						onDeleted={mutateGetManyAssignments}
+					/>
+				</Suspense>
+			)}
 		</main>
 	);
 };

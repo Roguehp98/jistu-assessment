@@ -7,3 +7,17 @@
 | Commands (dev/build/db/mobile/lint/test)                                        | [`_wiki/COMMANDS.md`](_wiki/COMMANDS.md) |
 | Full wiki (architecture, per-app, db, api, conventions, config, lessons, plans) | [`_wiki/`](_wiki/)                       |
 | Server API SSOT                                                                 | [`_bruno/`](_bruno)                      |
+
+## How to run
+
+### Installation
+
+```sh
+npm install
+```
+
+### Dev
+
+```sh
+npm run dev
+```

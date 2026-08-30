@@ -12,11 +12,13 @@ type CreateAssignmentFormValues = {
 	label: string;
 };
 
-type ICreateNewAssignment = {
+export type ICreateNewAssignment = {
+	open: boolean;
+	onClose: () => void;
 	onCreated: () => void;
 };
 
-const CreateNewAssignment: FC<ICreateNewAssignment> = ({ onCreated }) => {
+const CreateNewAssignment: FC<ICreateNewAssignment> = ({ open, onClose, onCreated }) => {
 	const { data, isError, isMutating, reset, trigger } = useEnhancedSWRMutation(
 		CREATE_ASSIGNMENT_KEY,
 		createAssignment,
@@ -24,13 +26,6 @@ const CreateNewAssignment: FC<ICreateNewAssignment> = ({ onCreated }) => {
 	const [form] = Form.useForm<CreateAssignmentFormValues>();
 	const label = Form.useWatch("label", form);
 	const [canSubmit, setCanSubmit] = useState(false);
-	const [isOpen, setIsOpen] = useState(false);
-
-	const handleOpen = () => {
-		reset();
-		setCanSubmit(false);
-		setIsOpen(true);
-	};
 
 	const handleClose = () => {
 		if (isMutating) return;
@@ -38,7 +33,7 @@ const CreateNewAssignment: FC<ICreateNewAssignment> = ({ onCreated }) => {
 		form.resetFields();
 		reset();
 		setCanSubmit(false);
-		setIsOpen(false);
+		onClose();
 	};
 
 	const handleSubmit = async ({ label }: CreateAssignmentFormValues) => {
@@ -51,7 +46,7 @@ const CreateNewAssignment: FC<ICreateNewAssignment> = ({ onCreated }) => {
 	};
 
 	useEffect(() => {
-		if (!isOpen || !label?.trim()) {
+		if (!open || !label?.trim()) {
 			setCanSubmit(false);
 
 			return;
@@ -71,63 +66,57 @@ const CreateNewAssignment: FC<ICreateNewAssignment> = ({ onCreated }) => {
 		return () => {
 			isCurrentValidation = false;
 		};
-	}, [form, isOpen, label]);
+	}, [form, label, open]);
 
 	return (
-		<>
-			<Button type="primary" onClick={handleOpen}>
-				Create assignment
-			</Button>
-
-			<Modal
-				destroyOnHidden
-				footer={
-					<div className="flex justify-end gap-2">
-						<Button disabled={isMutating} onClick={handleClose}>
-							Cancel
-						</Button>
-						<Button
-							disabled={!canSubmit}
-							form="create-assignment-form"
-							htmlType="submit"
-							loading={isMutating}
-							type="primary"
-						>
-							Create
-						</Button>
-					</div>
-				}
-				open={isOpen}
-				title="Create assignment"
-				width={420}
-				onCancel={handleClose}
-			>
-				<Form
-					form={form}
-					id="create-assignment-form"
-					layout="vertical"
-					preserve={false}
-					onFinish={handleSubmit}
-				>
-					{isError && (
-						<Alert
-							className="mb-4"
-							title={data?.message || "Unable to create assignment. Please try again."}
-							showIcon
-							type="error"
-						/>
-					)}
-
-					<Form.Item
-						label="Label"
-						name="label"
-						rules={[{ required: true, whitespace: true, message: "Label is required" }]}
+		<Modal
+			destroyOnHidden
+			footer={
+				<div className="flex justify-end gap-2">
+					<Button disabled={isMutating} onClick={handleClose}>
+						Cancel
+					</Button>
+					<Button
+						disabled={!canSubmit}
+						form="create-assignment-form"
+						htmlType="submit"
+						loading={isMutating}
+						type="primary"
 					>
-						<Input autoFocus maxLength={100} placeholder="Assignment label" />
-					</Form.Item>
-				</Form>
-			</Modal>
-		</>
+						Create
+					</Button>
+				</div>
+			}
+			open={open}
+			title="Create assignment"
+			width={420}
+			onCancel={handleClose}
+		>
+			<Form
+				form={form}
+				id="create-assignment-form"
+				layout="vertical"
+				preserve={false}
+				onFinish={handleSubmit}
+			>
+				{isError && (
+					<Alert
+						className="mb-4"
+						title={data?.message || "Unable to create assignment. Please try again."}
+						showIcon
+						type="error"
+					/>
+				)}
+
+				<Form.Item
+					label="Label"
+					name="label"
+					rules={[{ required: true, whitespace: true, message: "Label is required" }]}
+				>
+					<Input autoFocus maxLength={100} placeholder="Assignment label" />
+				</Form.Item>
+			</Form>
+		</Modal>
 	);
 };
 
