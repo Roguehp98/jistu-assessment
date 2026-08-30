@@ -1,4 +1,4 @@
 export const DASHBOARD_ROUTES = {
-	ASSIGNMENTS: { path: "/assignments" },
-	SHIPMENTS: { path: "/shipments" },
+	ASSIGNMENTS: { label: "Assignments", path: "/assignments" },
+	SHIPMENTS: { label: "Shipments", path: "/shipments" },
 };

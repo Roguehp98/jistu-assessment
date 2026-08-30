@@ -43,7 +43,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
 				<ColorSchemeProvider>
 					<NuqsAdapter>{children}</NuqsAdapter>
 				</ColorSchemeProvider>
-
 				<ScrollRestoration />
 				<Scripts />
 			</body>
