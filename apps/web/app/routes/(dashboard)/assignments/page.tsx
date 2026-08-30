@@ -33,7 +33,7 @@ const Page = () => {
 		data: getManyAssignmentsState,
 		isLoading: isGetManyAssignmentsLoading,
 		isError: isGetManyAssignmentsError,
-		mutate,
+		mutate: mutateGetManyAssignments,
 	} = useEnhancedSWR(
 		[ACTION_TAG.GET_MANY_ASSIGNMENTS, normalizedPage, normalizedPerPage, debouncedSearch, status],
 		getManyAssignments,
@@ -66,10 +66,6 @@ const Page = () => {
 		setQuery({ perPage: nextPerPage, page: 1 });
 	};
 
-	const handleAssignmentCreated = async () => {
-		await mutate();
-	};
-
 	const handleAssignmentSelect = (assignment: Assignment) => {
 		setSelectedAssignment(assignment);
 	};
@@ -82,7 +78,7 @@ const Page = () => {
 		items: assignments.items,
 		search,
 		status,
-		onCreated: handleAssignmentCreated,
+		onCreated: mutateGetManyAssignments,
 		onSearchChange: handleSearchChange,
 		onStatusChange: handleStatusChange,
 	} satisfies IHeader;
@@ -110,7 +106,11 @@ const Page = () => {
 
 			<Pagination {...paginationProps} />
 
-			<AssignmentDetail assignment={selectedAssignment} onClose={handleDetailModalClose} />
+			<AssignmentDetail
+				assignment={selectedAssignment}
+				onClose={handleDetailModalClose}
+				onDeleted={mutateGetManyAssignments}
+			/>
 		</main>
 	);
 };

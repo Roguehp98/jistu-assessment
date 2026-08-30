@@ -10,7 +10,7 @@ export type IHeader = {
 	items: number;
 	search: string;
 	status: ASSIGNMENT_STATUS[];
-	onCreated: () => Promise<void>;
+	onCreated: () => void;
 	onSearchChange: ChangeEventHandler<HTMLInputElement>;
 	onStatusChange: (status: ASSIGNMENT_STATUS[]) => void;
 };
