@@ -4,7 +4,13 @@ import { ACTION_STATUS, ShipmentSchema } from "@repo/value";
 import type { ACTION_TAG } from "@web/libs/actions";
 import { fetchValidated } from "@web/libs/fetch";
 
-const UpdateShipmentFieldsSchema = pick(ShipmentSchema, ["delivery_by_date", "lat", "lng"]);
+const UpdateShipmentFieldsSchema = pick(ShipmentSchema, [
+	"assignment_id",
+	"delivery_by_date",
+	"lat",
+	"lng",
+	"status",
+]);
 
 export const UpdateShipmentInputSchema = object({
 	shipment: ShipmentSchema,
@@ -27,9 +33,10 @@ export const updateShipment = async (
 
 	return await fetchValidated(UpdateShipmentApiResponseSchema, `/api/shipments/${shipment.id}`, {
 		body: {
+			assignment_id: updates.assignment_id,
 			client_name: shipment.client_name,
 			label: shipment.label,
-			status: shipment.status,
+			status: updates.status,
 			arrival_date: shipment.arrival_date,
 			delivery_by_date: updates.delivery_by_date,
 			eta: shipment.eta,

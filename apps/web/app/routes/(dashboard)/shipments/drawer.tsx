@@ -2,8 +2,7 @@ import { Alert, Drawer as AntDrawer, Form as AntdForm, Button, type FormInstance
 import dayjs from "dayjs";
 import { type FC, useEffect, useState } from "react";
 
-import type { Shipment } from "@repo/value";
-import { ACTION_STATUS } from "@repo/value";
+import { ACTION_STATUS, SHIPMENT_STATUS, type Shipment } from "@repo/value";
 import { updateShipment } from "@web/actions/dashboard/update-shipment";
 import { ACTION_TAG } from "@web/libs/actions";
 import { useEnhancedSWRMutation } from "@web/libs/swr";
@@ -59,7 +58,7 @@ const Form: FC<IShipmentForm> = ({ errorMessage, form, isError, shipment, onSubm
 				/>
 			)}
 
-			<FormItems />
+			<FormItems originalStatus={shipment.status} />
 		</AntdForm>
 	);
 };
@@ -92,9 +91,12 @@ const Drawer: FC<IDrawer> = ({ shipment, onClose, onUpdated }) => {
 		const response = await trigger({
 			shipment,
 			updates: {
+				assignment_id:
+					values.status === SHIPMENT_STATUS.OPEN ? null : (values.assignment_id ?? null),
 				delivery_by_date: values.delivery_by_date.toISOString(),
 				lat: coordinates.lat,
 				lng: coordinates.lng,
+				status: values.status,
 			},
 		});
 
@@ -103,6 +105,10 @@ const Drawer: FC<IDrawer> = ({ shipment, onClose, onUpdated }) => {
 		await onUpdated();
 		handleClose();
 	};
+
+	useEffect(() => {
+		if (shipment) form.setFieldsValue(getFormValues(shipment));
+	}, [form, shipment]);
 
 	useEffect(() => {
 		if (!shipment || !formValues) {
