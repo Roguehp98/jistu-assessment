@@ -2,25 +2,29 @@ import { divIcon, type LatLngTuple } from "leaflet";
 import { type FC, useMemo } from "react";
 import { MapContainer, Marker, Polyline, Popup, TileLayer } from "react-leaflet";
 
-import type { Coordinate, ILocationMap } from "@web/types/ui/location-map";
+import type { Coordinate, ILocationMap, LocationMapPointVariant } from "@web/types/ui/location-map";
 
 import Viewport from "./viewport";
 
-const markerIcon = divIcon({
-	className: "location-map__marker",
-	html: '<span class="location-map__pin"><span></span></span>',
-	iconAnchor: [14, 34],
-	iconSize: [28, 36],
-	popupAnchor: [0, -32],
-});
+const createMarkerIcon = (variant: LocationMapPointVariant, isSelected: boolean) =>
+	divIcon({
+		className: "location-map__marker",
+		html: `<span class="location-map__pin location-map__pin--${variant}${isSelected ? " location-map__pin--selected" : ""}"><span></span></span>`,
+		iconAnchor: isSelected ? [17, 41] : [14, 34],
+		iconSize: isSelected ? [34, 43] : [28, 36],
+		popupAnchor: isSelected ? [0, -39] : [0, -32],
+	});
 
-const selectedMarkerIcon = divIcon({
-	className: "location-map__marker",
-	html: '<span class="location-map__pin location-map__pin--selected"><span></span></span>',
-	iconAnchor: [17, 41],
-	iconSize: [34, 43],
-	popupAnchor: [0, -39],
-});
+const markerIcons = {
+	info: {
+		default: createMarkerIcon("info", false),
+		selected: createMarkerIcon("info", true),
+	},
+	success: {
+		default: createMarkerIcon("success", false),
+		selected: createMarkerIcon("success", true),
+	},
+};
 
 const toLatLngTuple = ([latitude, longitude]: Coordinate): LatLngTuple => [latitude, longitude];
 
@@ -59,14 +63,14 @@ const MapClient: FC<ILocationMap> = ({
 				<Polyline pathOptions={{ color: "#2563eb", weight: 4 }} positions={pathPositions} />
 			)}
 
-			{points.map(({ coordinate, content, id, title }) => {
+			{points.map(({ coordinate, content, id, title, variant = "info" }) => {
 				const isSelected = id === selectedPointId;
 
 				return (
 					<Marker
 						key={id}
 						alt={title}
-						icon={isSelected ? selectedMarkerIcon : markerIcon}
+						icon={markerIcons[variant][isSelected ? "selected" : "default"]}
 						position={toLatLngTuple(coordinate)}
 						title={title}
 						zIndexOffset={isSelected ? 1_000 : 0}
