@@ -7,6 +7,7 @@ export enum ACTION_TAG {
 	CREATE_ASSIGNMENT = "createAssignment",
 	DELETE_ASSIGNMENT = "deleteAssignment",
 	GET_ASSIGNMENT = "getAssignment",
+	GET_ASSIGNMENT_OPTIONS = "getAssignmentOptions",
 	GET_MANY_ASSIGNMENTS = "getManyAssignments",
 	GET_MANY_SHIPMENTS = "getManyShipments",
 	UPDATE_SHIPMENT = "updateShipment",

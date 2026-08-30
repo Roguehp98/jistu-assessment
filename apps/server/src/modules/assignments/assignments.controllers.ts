@@ -6,6 +6,7 @@ import { error, success } from "@server/utils/response";
 
 import { assignmentParamsSchema, createAssignmentSchema } from "./assignments.schema";
 import {
+	getAssignmentOptions as getAssignmentOptionsService,
 	getAssignment as getAssignmentService,
 	getManyAssignments as getManyAssignmentsService,
 } from "./assignments.services";
@@ -22,6 +23,12 @@ export const getManyAssignments = factory.createHandlers((c) => {
 	const assignments = getManyAssignmentsService(db, requestUrl);
 
 	return c.json(success({ data: assignments }));
+});
+
+export const getAssignmentOptions = factory.createHandlers((c) => {
+	const options = getAssignmentOptionsService(c.var.db);
+
+	return c.json(success({ data: options }));
 });
 
 export const getAssignment = factory.createHandlers(

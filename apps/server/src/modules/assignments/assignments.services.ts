@@ -1,11 +1,20 @@
 import type { Low } from "lowdb";
 
-import type { Assignment } from "@repo/value";
+import { ASSIGNMENT_STATUS, type Assignment } from "@repo/value";
 import type { IDatabase } from "@server/types/db";
 import { queryItems } from "@server/utils/query";
 
 export const getManyAssignments = (database: Low<IDatabase>, requestUrl: string) => {
 	return queryItems(database.data.assignments, requestUrl);
+};
+
+export const getAssignmentOptions = (database: Low<IDatabase>) => {
+	return database.data.assignments
+		.filter(({ status }) => status === ASSIGNMENT_STATUS.OPEN)
+		.map(({ id, label }) => ({ id, label }))
+		.sort(
+			(left, right) => left.label.localeCompare(right.label) || left.id.localeCompare(right.id),
+		);
 };
 
 export const getAssignment = (database: Low<IDatabase>, assignmentId: string) => {
