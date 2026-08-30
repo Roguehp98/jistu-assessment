@@ -1,9 +1,8 @@
 import { Table as AntTable, type TableProps, Tag } from "antd";
-import { type FC, useState } from "react";
+import type { FC } from "react";
 
 import { SHIPMENT_STATUS, type Shipment } from "@repo/value";
 
-import Drawer from "./drawer";
 import { SHIPMENT_STATUS_LABELS, type ShipmentArrivalSort } from "./utils";
 
 const STATUS_COLORS = {
@@ -23,7 +22,7 @@ type IShipmentsTable = {
 	emptyText: string;
 	isLoading: boolean;
 	onArrivalSortChange: (arrivalSort: ShipmentArrivalSort | null) => void;
-	onUpdated: () => Promise<void>;
+	onShipmentSelect: (shipment: Shipment) => void;
 };
 
 const getColumns = (arrivalSort: ShipmentArrivalSort | null): TableProps<Shipment>["columns"] => [
@@ -61,22 +60,16 @@ const Table: FC<IShipmentsTable> = ({
 	emptyText,
 	isLoading,
 	onArrivalSortChange,
-	onUpdated,
+	onShipmentSelect,
 }) => {
-	const [selectedShipment, setSelectedShipment] = useState<Shipment | null>(null);
-
 	const handleChange: NonNullable<TableProps<Shipment>["onChange"]> = (_, __, sorter) => {
 		const arrivalSorter = Array.isArray(sorter) ? sorter[0] : sorter;
 
 		onArrivalSortChange(arrivalSorter.order ?? null);
 	};
 
-	const handleClose = () => {
-		setSelectedShipment(null);
-	};
-
 	const handleRowClick = (shipment: Shipment) => {
-		setSelectedShipment(shipment);
+		onShipmentSelect(shipment);
 	};
 
 	const getRowProps: NonNullable<TableProps<Shipment>["onRow"]> = (shipment) => ({
@@ -94,24 +87,20 @@ const Table: FC<IShipmentsTable> = ({
 	});
 
 	return (
-		<>
-			<AntTable<Shipment>
-				bordered
-				caption={<span className="sr-only">Shipments</span>}
-				columns={getColumns(arrivalSort)}
-				dataSource={dataSource}
-				loading={isLoading}
-				locale={{ emptyText }}
-				pagination={false}
-				rowKey="id"
-				scroll={{ x: 820 }}
-				size="middle"
-				onChange={handleChange}
-				onRow={getRowProps}
-			/>
-
-			<Drawer shipment={selectedShipment} onClose={handleClose} onUpdated={onUpdated} />
-		</>
+		<AntTable<Shipment>
+			bordered
+			caption={<span className="sr-only">Shipments</span>}
+			columns={getColumns(arrivalSort)}
+			dataSource={dataSource}
+			loading={isLoading}
+			locale={{ emptyText }}
+			pagination={false}
+			rowKey="id"
+			scroll={{ x: 820 }}
+			size="middle"
+			onChange={handleChange}
+			onRow={getRowProps}
+		/>
 	);
 };
 

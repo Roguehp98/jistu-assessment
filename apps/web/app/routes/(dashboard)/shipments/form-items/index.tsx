@@ -1,24 +1,27 @@
-import { Form, type FormItemProps } from "antd";
+import { DatePicker, Form, type FormItemProps, Input } from "antd";
 import type { Dayjs } from "dayjs";
 import type { ElementType, FC } from "react";
 
 import type { SHIPMENT_STATUS, Shipment } from "@repo/value";
 
-import ArrivalDateInput from "./arrival-date-input";
+import ArrivalDateInput, { formatDateTime } from "./arrival-date-input";
 import AssignmentFormItem from "./assignment-form-item";
 import CoordinatesInput, { COORDINATES_ERROR_MESSAGE, parseCoordinates } from "./coordinates-input";
 import DeliveryDatePicker from "./delivery-date-picker";
-import DisabledInput from "./disabled-input";
 import StatusSelect from "./status-select";
 
 export { COORDINATES_ERROR_MESSAGE, parseCoordinates };
 
+export type ShipmentFormMode = "create" | "edit";
+
 export type ShipmentFormValues = {
 	assignment_id?: string | null;
-	arrival_date: Dayjs;
+	arrival_date: Dayjs | null;
 	client_name: string;
 	coordinates: string;
-	delivery_by_date: Dayjs;
+	delivery_by_date: Dayjs | null;
+	eta: Dayjs | null;
+	label: string;
 	status: Shipment["status"];
 	warehouse_id: string;
 };
@@ -29,12 +32,14 @@ type FieldConfig = {
 	getComponentProps?: (props: IFormItems) => Record<string, unknown>;
 	kind?: "field";
 	label: string;
+	modes?: ShipmentFormMode[];
 	name: keyof ShipmentFormValues;
 	rules?: FormItemProps["rules"];
 };
 
 type StandaloneConfig = {
 	Component: ElementType;
+	getComponentProps?: (props: IFormItems) => Record<string, unknown>;
 	key: string;
 	kind: "standalone";
 };
@@ -42,14 +47,25 @@ type StandaloneConfig = {
 type FormItemConfig = FieldConfig | StandaloneConfig;
 
 type IFormItems = {
+	mode: ShipmentFormMode;
+	originalAssignmentId: string | null;
 	originalStatus: SHIPMENT_STATUS;
 };
 
 const FORM_ITEMS: FormItemConfig[] = [
 	{
-		Component: DisabledInput,
+		Component: Input,
+		label: "Label",
+		modes: ["create"],
+		name: "label",
+		rules: [{ required: true, whitespace: true, message: "Label is required" }],
+	},
+	{
+		Component: Input,
+		getComponentProps: ({ mode }) => ({ disabled: mode === "edit" }),
 		label: "Client name",
 		name: "client_name",
+		rules: [{ required: true, whitespace: true, message: "Client name is required" }],
 	},
 	{
 		Component: StatusSelect,
@@ -59,13 +75,23 @@ const FORM_ITEMS: FormItemConfig[] = [
 	},
 	{
 		Component: AssignmentFormItem,
+		getComponentProps: ({ originalAssignmentId }) => ({ originalAssignmentId }),
 		key: "assignment_id",
 		kind: "standalone",
 	},
 	{
 		Component: ArrivalDateInput,
 		label: "Arrival date",
+		modes: ["edit"],
 		name: "arrival_date",
+	},
+	{
+		Component: DatePicker,
+		getComponentProps: () => ({ className: "w-full", format: "MMM D, YYYY" }),
+		label: "Arrival date",
+		modes: ["create"],
+		name: "arrival_date",
+		rules: [{ required: true, message: "Arrival date is required" }],
 	},
 	{
 		Component: DeliveryDatePicker,
@@ -85,9 +111,23 @@ const FORM_ITEMS: FormItemConfig[] = [
 		],
 	},
 	{
-		Component: DisabledInput,
+		Component: DatePicker,
+		getComponentProps: () => ({
+			className: "w-full",
+			format: formatDateTime,
+			showTime: { format: "h:mm A" },
+		}),
+		label: "ETA",
+		modes: ["create"],
+		name: "eta",
+		rules: [{ required: true, message: "ETA is required" }],
+	},
+	{
+		Component: Input,
+		getComponentProps: ({ mode }) => ({ disabled: mode === "edit" }),
 		label: "Warehouse ID",
 		name: "warehouse_id",
+		rules: [{ required: true, whitespace: true, message: "Warehouse ID is required" }],
 	},
 	{
 		Component: CoordinatesInput,
@@ -111,7 +151,13 @@ const FormItems: FC<IFormItems> = (props) =>
 	FORM_ITEMS.map((item) => {
 		const Component = item.Component;
 
-		if (item.kind === "standalone") return <Component key={item.key} />;
+		if (item.kind === "standalone") {
+			const componentProps = item.getComponentProps?.(props);
+
+			return <Component key={item.key} {...componentProps} />;
+		}
+
+		if (item.modes && !item.modes.includes(props.mode)) return null;
 		const componentProps = item.getComponentProps?.(props);
 
 		return (

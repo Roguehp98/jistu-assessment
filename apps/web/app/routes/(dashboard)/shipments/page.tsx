@@ -1,10 +1,11 @@
 import { useQueryStates } from "nuqs";
-import type { ComponentProps } from "react";
+import { type ComponentProps, useState } from "react";
 
 import { getManyShipments } from "@web/actions/dashboard/get-many-shipments";
 import { ACTION_TAG } from "@web/libs/actions";
 import { useEnhancedSWR } from "@web/libs/swr";
 
+import Drawer, { type ShipmentDrawerState } from "./drawer";
 import Header, { type IHeader } from "./header";
 import Pagination from "./pagination";
 import Table from "./table";
@@ -33,6 +34,7 @@ const ErrorMessage = () => (
 const Page = () => {
 	const [{ arrivalFrom, arrivalSort, arrivalTo, page, perPage, search, status }, setQuery] =
 		useQueryStates(parser);
+	const [drawerState, setDrawerState] = useState<ShipmentDrawerState>(null);
 	const normalizedPage = Math.max(1, page);
 	const normalizedPerPage = PAGE_SIZE_OPTIONS.includes(perPage) ? perPage : DEFAULT_PAGE_SIZE;
 	const arrivalFromParam = getDateParam(arrivalFrom);
@@ -73,6 +75,18 @@ const Page = () => {
 		setQuery({ search: event.target.value, page: 1 });
 	};
 
+	const handleCreate = () => {
+		setDrawerState({ mode: "create" });
+	};
+
+	const handleDrawerClose = () => {
+		setDrawerState(null);
+	};
+
+	const handleShipmentSelect: ComponentProps<typeof Table>["onShipmentSelect"] = (shipment) => {
+		setDrawerState({ mode: "edit", shipment });
+	};
+
 	const handlePageChange = (nextPage: number) => {
 		setQuery({ page: nextPage });
 	};
@@ -107,6 +121,7 @@ const Page = () => {
 		search,
 		status,
 		onArrivalRangeChange: handleArrivalRangeChange,
+		onCreate: handleCreate,
 		onSearchChange: handleSearchChange,
 		onStatusChange: handleStatusChange,
 	} satisfies IHeader;
@@ -117,7 +132,7 @@ const Page = () => {
 		emptyText: search ? "No matching shipments" : "No shipments",
 		isLoading: isGetManyShipmentsLoading,
 		onArrivalSortChange: handleArrivalSortChange,
-		onUpdated: handleShipmentUpdated,
+		onShipmentSelect: handleShipmentSelect,
 	} satisfies ComponentProps<typeof Table>;
 
 	const paginationProps = {
@@ -135,6 +150,8 @@ const Page = () => {
 			<Table {...tableProps} />
 
 			<Pagination {...paginationProps} />
+
+			<Drawer state={drawerState} onClose={handleDrawerClose} onUpdated={handleShipmentUpdated} />
 		</main>
 	);
 };

@@ -1,5 +1,5 @@
 import { Form, Select } from "antd";
-import { useEffect, useRef } from "react";
+import { type FC, useEffect } from "react";
 
 import { SHIPMENT_STATUS } from "@repo/value";
 import { getAssignmentOptions } from "@web/actions/dashboard/get-assignment-options";
@@ -8,11 +8,14 @@ import { useEnhancedSWR } from "@web/libs/swr";
 
 import type { ShipmentFormValues } from ".";
 
-const AssignmentFormItem = () => {
+type IAssignmentFormItem = {
+	originalAssignmentId: string | null;
+};
+
+const AssignmentFormItem: FC<IAssignmentFormItem> = ({ originalAssignmentId }) => {
 	const form = Form.useFormInstance<ShipmentFormValues>();
 	const status = Form.useWatch("status", form);
 	const assignmentId = Form.useWatch("assignment_id", form);
-	const originalAssignmentId = useRef(form.getFieldValue("assignment_id") ?? null).current;
 	const {
 		data: getAssignmentOptionsState,
 		isLoading: isGetAssignmentOptionsLoading,
@@ -23,6 +26,8 @@ const AssignmentFormItem = () => {
 	);
 
 	useEffect(() => {
+		if (!status) return;
+
 		if (status === SHIPMENT_STATUS.OPEN) {
 			if (form.getFieldValue("assignment_id") !== null) form.setFieldValue("assignment_id", null);
 
@@ -37,7 +42,7 @@ const AssignmentFormItem = () => {
 		}
 	}, [form, originalAssignmentId, status]);
 
-	if (status === SHIPMENT_STATUS.OPEN) return null;
+	if (!status || status === SHIPMENT_STATUS.OPEN) return null;
 
 	const options = (getAssignmentOptionsState?.data?.data ?? []).map(({ id, label }) => ({
 		label: `${label} (${id})`,
