@@ -15,7 +15,8 @@ Index — detail in linked section.
 - **Imports (auto)**: React, ahooks, react-router (`use*`, `Outlet`/`Link`/`NavLink`), es-toolkit, `clsx` (as `cn`).
 - **Exports** (`hooks/`, `ui/elements/`): default = main hook/component; named = secondary (helpers, types).
 - **Env**: all public env via `import.meta.env.*` (`vite.config.ts`) — **NEVER** `process.env` at runtime.
-- **UI/Antd**: single import from `antd`.
+- **UI/Antd**: ui from `ui/elements` first -> single import from `antd`
+- **Location maps**: reusable map UI consumes generic points/ordered paths; routes own DTO mapping and selection state. Keep Leaflet behind the mounted client boundary and map CSS in `styles/location-map.css`.
 
 ## Layout
 
@@ -26,16 +27,15 @@ apps/web/app/
   libs/      shared utils
   hooks/     reusable use-* hooks
   styles/    Tailwind
-  entry.client.tsx  entry.server.tsx  root.tsx
+  root.tsx
 apps/web/app/routes.ts
 ```
 
 ## Route groups
 
-| Group           | Purpose |
-| --------------- | ------- |
-| `(dashboard)/`  |         |
-| `(standalone)/` |         |
+| Group          | Purpose                |
+| -------------- | ---------------------- |
+| `(dashboard)/` | assignments, shipments |
 
 \+ SEO/infra files (404, `well-known/`).
 
@@ -86,14 +86,13 @@ Tiny, single-purpose, `use-*`, auto-imported. `useIsomorphicLayoutEffect` (ahook
 
 ## Styling
 
-- **Tailwind first**, SCSS for complex.
+- **Tailwind first**, CSS in `styles/` for complex.
 - **Color scheme** — root provider syncs Ant Design with system/light/dark; semantic Tailwind tokens use `light-dark()`. Toggle persistence and pre-paint init live in `libs/color-scheme.ts`.
 - `safelist` regex for `grid-cols-[1-6]`/`col-span-[1-6]` — dynamic classes purge otherwise.
 
 ## `root.tsx` composition
 
 - `<SWRConfig>` → `<NuqsAdapter>`.
-- `<Progress/>` (nprogress).
 
 ## Storage — `libs/storage.ts`
 
