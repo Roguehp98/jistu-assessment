@@ -5,10 +5,10 @@ import type { Assignment } from "@repo/value";
 import { getManyAssignments } from "@web/actions/dashboard/get-many-assignments";
 import { ACTION_TAG } from "@web/libs/actions";
 import { useEnhancedSWR } from "@web/libs/swr";
+import Pagination from "@web/ui/elements/pagination";
 
 import AssignmentDetail from "./assignment-detail";
 import Header, { type IHeader } from "./header";
-import Pagination from "./pagination";
 import Table from "./table";
 import { DEFAULT_PAGE_SIZE, PAGE_SIZE_OPTIONS, parser } from "./utils";
 
@@ -93,6 +93,8 @@ const Page = () => {
 	const paginationProps = {
 		current: normalizedPage,
 		pageSize: normalizedPerPage,
+		pageSizeId: "assignment-page-size",
+		pageSizeOptions: PAGE_SIZE_OPTIONS,
 		total: assignments.items,
 		onPageChange: handlePageChange,
 		onPageSizeChange: handlePerPageChange,

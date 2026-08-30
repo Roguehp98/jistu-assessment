@@ -4,10 +4,10 @@ import { type ComponentProps, useState } from "react";
 import { getManyShipments } from "@web/actions/dashboard/get-many-shipments";
 import { ACTION_TAG } from "@web/libs/actions";
 import { useEnhancedSWR } from "@web/libs/swr";
+import Pagination from "@web/ui/elements/pagination";
 
 import Drawer, { type ShipmentDrawerState } from "./drawer";
 import Header, { type IHeader } from "./header";
-import Pagination from "./pagination";
 import Table from "./table";
 import {
 	DEFAULT_PAGE_SIZE,
@@ -138,6 +138,8 @@ const Page = () => {
 	const paginationProps = {
 		current: normalizedPage,
 		pageSize: normalizedPerPage,
+		pageSizeId: "shipment-page-size",
+		pageSizeOptions: PAGE_SIZE_OPTIONS,
 		total: shipments.items,
 		onPageChange: handlePageChange,
 		onPageSizeChange: handlePerPageChange,
