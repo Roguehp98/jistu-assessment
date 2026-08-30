@@ -1,8 +1,17 @@
-import { Alert, Drawer as AntDrawer, Form as AntdForm, Button, type FormInstance } from "antd";
+import {
+	Alert,
+	Drawer as AntDrawer,
+	Form as AntdForm,
+	Button,
+	type FormInstance,
+	Popconfirm,
+	Tooltip,
+} from "antd";
 import dayjs from "dayjs";
 import { type FC, useEffect, useState } from "react";
 
 import { ACTION_STATUS, SHIPMENT_STATUS, type Shipment } from "@repo/value";
+import { deleteShipment } from "@web/actions/dashboard/delete-shipment";
 import { updateShipment } from "@web/actions/dashboard/update-shipment";
 import { ACTION_TAG } from "@web/libs/actions";
 import { useEnhancedSWRMutation } from "@web/libs/swr";
@@ -14,6 +23,7 @@ import FormItems, {
 } from "./form-items";
 
 const UPDATE_SHIPMENT_KEY: [ACTION_TAG.UPDATE_SHIPMENT] = [ACTION_TAG.UPDATE_SHIPMENT];
+const DELETE_SHIPMENT_KEY: [ACTION_TAG.DELETE_SHIPMENT] = [ACTION_TAG.DELETE_SHIPMENT];
 
 type IDrawer = {
 	shipment: Shipment | null;
@@ -37,6 +47,60 @@ type IShipmentForm = {
 	isError: boolean;
 	shipment: Shipment;
 	onSubmit: (values: ShipmentFormValues) => Promise<void>;
+};
+
+type IFooter = {
+	canSubmit: boolean;
+	deleteDisabledReason?: string;
+	isDeleting: boolean;
+	isUpdating: boolean;
+	onCancel: () => void;
+	onDelete: () => Promise<void>;
+};
+
+const Footer: FC<IFooter> = ({
+	canSubmit,
+	deleteDisabledReason,
+	isDeleting,
+	isUpdating,
+	onCancel,
+	onDelete,
+}) => {
+	const isDeleteDisabled = Boolean(deleteDisabledReason) || isDeleting || isUpdating;
+
+	return (
+		<div className="flex items-center justify-between gap-4">
+			<Tooltip title={deleteDisabledReason}>
+				<span>
+					<Popconfirm
+						disabled={isDeleteDisabled}
+						description="This action cannot be undone."
+						title="Delete shipment?"
+						onConfirm={onDelete}
+					>
+						<Button danger disabled={isDeleteDisabled} loading={isDeleting}>
+							Delete shipment
+						</Button>
+					</Popconfirm>
+				</span>
+			</Tooltip>
+
+			<div className="flex items-center gap-2">
+				<Button disabled={isDeleting || isUpdating} onClick={onCancel}>
+					Cancel
+				</Button>
+				<Button
+					disabled={!canSubmit || isDeleting}
+					form="shipment-form"
+					htmlType="submit"
+					loading={isUpdating}
+					type="primary"
+				>
+					Save
+				</Button>
+			</div>
+		</div>
+	);
 };
 
 const Form: FC<IShipmentForm> = ({ errorMessage, form, isError, shipment, onSubmit }) => {
@@ -64,17 +128,41 @@ const Form: FC<IShipmentForm> = ({ errorMessage, form, isError, shipment, onSubm
 };
 
 const Drawer: FC<IDrawer> = ({ shipment, onClose, onUpdated }) => {
-	const { data, isError, isMutating, reset, trigger } = useEnhancedSWRMutation(
-		UPDATE_SHIPMENT_KEY,
-		updateShipment,
-	);
+	const {
+		data: updateShipmentState,
+		isError: isUpdateShipmentError,
+		isMutating: isUpdateShipmentMutating,
+		reset: resetUpdateShipment,
+		trigger: triggerUpdateShipment,
+	} = useEnhancedSWRMutation(UPDATE_SHIPMENT_KEY, updateShipment);
+	const {
+		data: deleteShipmentState,
+		isError: isDeleteShipmentError,
+		isMutating: isDeleteShipmentMutating,
+		reset: resetDeleteShipment,
+		trigger: triggerDeleteShipment,
+	} = useEnhancedSWRMutation(DELETE_SHIPMENT_KEY, deleteShipment);
 	const [form] = AntdForm.useForm<ShipmentFormValues>();
 	const formValues = AntdForm.useWatch([], form);
 	const [canSubmit, setCanSubmit] = useState(false);
 
 	const handleClose = () => {
-		reset();
+		if (isDeleteShipmentMutating || isUpdateShipmentMutating) return;
+
+		resetDeleteShipment();
+		resetUpdateShipment();
 		onClose();
+	};
+
+	const handleDelete = async () => {
+		if (!shipment || shipment.assignment_id) return;
+
+		const response = await triggerDeleteShipment({ id: shipment.id });
+
+		if (response.status !== ACTION_STATUS.SUCCESS) return;
+
+		await onUpdated();
+		handleClose();
 	};
 
 	const handleSubmit = async (values: ShipmentFormValues) => {
@@ -88,7 +176,7 @@ const Drawer: FC<IDrawer> = ({ shipment, onClose, onUpdated }) => {
 			return;
 		}
 
-		const response = await trigger({
+		const response = await triggerUpdateShipment({
 			shipment,
 			updates: {
 				assignment_id:
@@ -133,24 +221,27 @@ const Drawer: FC<IDrawer> = ({ shipment, onClose, onUpdated }) => {
 		};
 	}, [form, formValues, shipment]);
 
+	const deleteDisabledReason = !shipment
+		? "Shipment details are unavailable"
+		: shipment.assignment_id
+			? "Assigned shipments cannot be deleted"
+			: undefined;
+	const errorMessage = isDeleteShipmentError
+		? deleteShipmentState?.message || "Unable to delete shipment. Please try again."
+		: updateShipmentState?.message;
+
 	return (
 		<AntDrawer
 			destroyOnHidden
 			footer={
-				<div className="flex justify-end gap-2">
-					<Button disabled={isMutating} onClick={handleClose}>
-						Cancel
-					</Button>
-					<Button
-						disabled={!shipment || !canSubmit}
-						form="shipment-form"
-						htmlType="submit"
-						loading={isMutating}
-						type="primary"
-					>
-						Save
-					</Button>
-				</div>
+				<Footer
+					canSubmit={Boolean(shipment) && canSubmit}
+					deleteDisabledReason={deleteDisabledReason}
+					isDeleting={isDeleteShipmentMutating}
+					isUpdating={isUpdateShipmentMutating}
+					onCancel={handleClose}
+					onDelete={handleDelete}
+				/>
 			}
 			open={shipment !== null}
 			title={shipment ? `Shipment ${shipment.label}` : "Shipment details"}
@@ -160,9 +251,9 @@ const Drawer: FC<IDrawer> = ({ shipment, onClose, onUpdated }) => {
 			{shipment && (
 				<Form
 					key={shipment.id}
-					errorMessage={data?.message}
+					errorMessage={errorMessage}
 					form={form}
-					isError={isError}
+					isError={isDeleteShipmentError || isUpdateShipmentError}
 					shipment={shipment}
 					onSubmit={handleSubmit}
 				/>

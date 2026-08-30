@@ -6,6 +6,7 @@ export enum ACTION_TAG {
 	/* dashboard */
 	CREATE_ASSIGNMENT = "createAssignment",
 	DELETE_ASSIGNMENT = "deleteAssignment",
+	DELETE_SHIPMENT = "deleteShipment",
 	GET_ASSIGNMENT = "getAssignment",
 	GET_ASSIGNMENT_OPTIONS = "getAssignmentOptions",
 	GET_MANY_ASSIGNMENTS = "getManyAssignments",
