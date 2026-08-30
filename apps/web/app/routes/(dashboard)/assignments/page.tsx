@@ -10,7 +10,7 @@ import AssignmentDetail from "./assignment-detail";
 import Header, { type IHeader } from "./header";
 import Pagination from "./pagination";
 import Table from "./table";
-import { PAGE_SIZE_OPTIONS, parser } from "./utils";
+import { DEFAULT_PAGE_SIZE, PAGE_SIZE_OPTIONS, parser } from "./utils";
 
 export { parser };
 
@@ -27,7 +27,7 @@ const Page = () => {
 	const [selectedAssignment, setSelectedAssignment] = useState<Assignment | null>(null);
 	const [{ page, perPage, search, status }, setQuery] = useQueryStates(parser);
 	const normalizedPage = Math.max(1, page);
-	const normalizedPerPage = PAGE_SIZE_OPTIONS.includes(perPage) ? perPage : 25;
+	const normalizedPerPage = PAGE_SIZE_OPTIONS.includes(perPage) ? perPage : DEFAULT_PAGE_SIZE;
 	const debouncedSearch = useDebounce(search.trim(), { wait: 300 });
 	const {
 		data: getManyAssignmentsState,

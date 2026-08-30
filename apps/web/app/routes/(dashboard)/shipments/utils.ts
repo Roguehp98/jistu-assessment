@@ -12,6 +12,7 @@ import type { ShipmentArrivalSortParam } from "@web/actions/dashboard/get-many-s
 
 export type ShipmentArrivalSort = "ascend" | "descend";
 
+export const DEFAULT_PAGE_SIZE = 10;
 export const PAGE_SIZE_OPTIONS = [10, 25, 50];
 
 const ARRIVAL_SORT_OPTIONS: ShipmentArrivalSort[] = ["ascend", "descend"];
@@ -36,7 +37,7 @@ export const parser = {
 	arrivalTo: parseAsIsoDate,
 	arrivalSort: parseAsStringEnum<ShipmentArrivalSort>(ARRIVAL_SORT_OPTIONS),
 	page: parseAsInteger.withDefault(1),
-	perPage: parseAsInteger.withDefault(25),
+	perPage: parseAsInteger.withDefault(DEFAULT_PAGE_SIZE),
 };
 
 export const getDateParam = (date: Date | null) => date?.toISOString().slice(0, 10) ?? "";

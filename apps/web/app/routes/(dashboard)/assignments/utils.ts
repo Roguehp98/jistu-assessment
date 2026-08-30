@@ -12,6 +12,7 @@ export const ASSIGNMENT_STATUS_OPTIONS = Object.values(ASSIGNMENT_STATUS).map((v
 	label: STATUS_LABELS[value],
 }));
 
+export const DEFAULT_PAGE_SIZE = 25;
 export const PAGE_SIZE_OPTIONS = [10, 25, 50];
 
 export const parser = {
@@ -20,5 +21,5 @@ export const parser = {
 		parseAsStringEnum<ASSIGNMENT_STATUS>(Object.values(ASSIGNMENT_STATUS)),
 	).withDefault([]),
 	page: parseAsInteger.withDefault(1),
-	perPage: parseAsInteger.withDefault(25),
+	perPage: parseAsInteger.withDefault(DEFAULT_PAGE_SIZE),
 };

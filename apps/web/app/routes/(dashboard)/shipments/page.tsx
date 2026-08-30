@@ -9,6 +9,7 @@ import Header, { type IHeader } from "./header";
 import Pagination from "./pagination";
 import Table from "./table";
 import {
+	DEFAULT_PAGE_SIZE,
 	getArrivalDateRange,
 	getArrivalSortParam,
 	getDateParam,
@@ -33,7 +34,7 @@ const Page = () => {
 	const [{ arrivalFrom, arrivalSort, arrivalTo, page, perPage, search, status }, setQuery] =
 		useQueryStates(parser);
 	const normalizedPage = Math.max(1, page);
-	const normalizedPerPage = PAGE_SIZE_OPTIONS.includes(perPage) ? perPage : 25;
+	const normalizedPerPage = PAGE_SIZE_OPTIONS.includes(perPage) ? perPage : DEFAULT_PAGE_SIZE;
 	const arrivalFromParam = getDateParam(arrivalFrom);
 	const arrivalToParam = getDateParam(arrivalTo);
 	const arrivalDateRange = getArrivalDateRange(arrivalFrom, arrivalTo);
