@@ -15,6 +15,8 @@ import ColorSchemeProvider from "@web/ui/elements/color-scheme/provider";
 
 import { COLOR_SCHEME_INIT_SCRIPT } from "./libs/color-scheme";
 
+export const meta: Route.MetaFunction = () => [{ title: "Jistu Assessment" }];
+
 export const links: Route.LinksFunction = () => [
 	{ rel: "preconnect", href: "https://fonts.googleapis.com" },
 	{
