@@ -13,7 +13,7 @@ type CreateAssignmentFormValues = {
 };
 
 type ICreateNewAssignment = {
-	onCreated: () => Promise<void>;
+	onCreated: () => void;
 };
 
 const CreateNewAssignment: FC<ICreateNewAssignment> = ({ onCreated }) => {
