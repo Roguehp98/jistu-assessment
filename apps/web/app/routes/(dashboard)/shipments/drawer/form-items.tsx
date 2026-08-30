@@ -3,6 +3,8 @@ import type { Dayjs } from "dayjs";
 import type { ComponentProps, ElementType, FC } from "react";
 
 import type { Shipment } from "@repo/value";
+import type { LocationMapPoint } from "@web/types/ui/location-map";
+import LocationMap from "@web/ui/elements/location-map/wrapper";
 
 import { SHIPMENT_STATUS_OPTIONS } from "../utils";
 
@@ -10,6 +12,7 @@ const dateFormatter = new Intl.DateTimeFormat("en", {
 	dateStyle: "medium",
 	timeStyle: "short",
 });
+const SHIPMENT_LOCATION_POINT_ID = "shipment-location";
 
 export const COORDINATES_ERROR_MESSAGE =
 	"Enter latitude and longitude separated by a comma within valid ranges";
@@ -82,9 +85,33 @@ const StatusSelect: FC<ComponentProps<typeof Select>> = (props) => (
 	<Select {...props} disabled options={SHIPMENT_STATUS_OPTIONS} />
 );
 
-const CoordinatesInput: FC<ComponentProps<typeof Input>> = (props) => (
-	<Input {...props} placeholder="32.7767, -96.7970" />
-);
+const CoordinatesInput: FC<ComponentProps<typeof Input>> = ({ value, ...props }) => {
+	const coordinates = typeof value === "string" ? parseCoordinates(value) : null;
+	const points: LocationMapPoint[] = coordinates
+		? [
+				{
+					coordinate: [coordinates.lat, coordinates.lng],
+					id: SHIPMENT_LOCATION_POINT_ID,
+					title: "Shipment location",
+				},
+			]
+		: [];
+
+	return (
+		<>
+			<Input {...props} placeholder="32.7767, -96.7970" value={value} />
+
+			<div className="mt-3">
+				<LocationMap
+					className="location-map--compact"
+					emptyContent="Location preview unavailable"
+					points={points}
+					selectedPointId={SHIPMENT_LOCATION_POINT_ID}
+				/>
+			</div>
+		</>
+	);
+};
 
 const DeliveryDatePicker: FC<ComponentProps<typeof DatePicker>> = (props) => {
 	const form = Form.useFormInstance<ShipmentFormValues>();

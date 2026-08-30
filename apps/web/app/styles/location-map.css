@@ -5,6 +5,10 @@
 	width: 100%;
 }
 
+.location-map.location-map--compact {
+	height: 16rem;
+}
+
 .location-map--placeholder {
 	background: light-dark(#e5e7eb, #272a31);
 }
