@@ -38,9 +38,10 @@ type IAssignmentsTable = {
 	dataSource: Assignment[];
 	emptyText: string;
 	isLoading: boolean;
+	onSelect: (assignment: Assignment) => void;
 };
 
-const Table: FC<IAssignmentsTable> = ({ dataSource, emptyText, isLoading }) => (
+const Table: FC<IAssignmentsTable> = ({ dataSource, emptyText, isLoading, onSelect }) => (
 	<AntTable<Assignment>
 		bordered
 		caption={<span className="sr-only">Assignments</span>}
@@ -52,6 +53,18 @@ const Table: FC<IAssignmentsTable> = ({ dataSource, emptyText, isLoading }) => (
 		rowKey="id"
 		scroll={{ x: 620 }}
 		size="middle"
+		onRow={(assignment) => ({
+			"aria-label": `View assignment ${assignment.label}`,
+			className: "cursor-pointer",
+			tabIndex: 0,
+			onClick: () => onSelect(assignment),
+			onKeyDown: (event) => {
+				if (event.key !== "Enter" && event.key !== " ") return;
+
+				event.preventDefault();
+				onSelect(assignment);
+			},
+		})}
 	/>
 );
 

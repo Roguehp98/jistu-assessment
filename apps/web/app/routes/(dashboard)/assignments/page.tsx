@@ -1,10 +1,12 @@
 import { useQueryStates } from "nuqs";
 import type { ComponentProps } from "react";
 
+import type { Assignment } from "@repo/value";
 import { getManyAssignments } from "@web/actions/dashboard/get-many-assignments";
 import { ACTION_TAG } from "@web/libs/actions";
 import { useEnhancedSWR } from "@web/libs/swr";
 
+import AssignmentDetail from "./assignment-detail";
 import Header, { type IHeader } from "./header";
 import Pagination from "./pagination";
 import Table from "./table";
@@ -22,6 +24,7 @@ const ErrorMessage = () => (
 );
 
 const Page = () => {
+	const [selectedAssignment, setSelectedAssignment] = useState<Assignment | null>(null);
 	const [{ page, perPage, search, status }, setQuery] = useQueryStates(parser);
 	const normalizedPage = Math.max(1, page);
 	const normalizedPerPage = PAGE_SIZE_OPTIONS.includes(perPage) ? perPage : 25;
@@ -67,6 +70,14 @@ const Page = () => {
 		await mutate();
 	};
 
+	const handleAssignmentSelect = (assignment: Assignment) => {
+		setSelectedAssignment(assignment);
+	};
+
+	const handleDetailModalClose = () => {
+		setSelectedAssignment(null);
+	};
+
 	const headerProps = {
 		items: assignments.items,
 		search,
@@ -80,6 +91,7 @@ const Page = () => {
 		dataSource: assignments.data,
 		emptyText: search || status.length > 0 ? "No matching assignments" : "No assignments",
 		isLoading: isGetManyAssignmentsLoading,
+		onSelect: handleAssignmentSelect,
 	} satisfies ComponentProps<typeof Table>;
 
 	const paginationProps = {
@@ -97,6 +109,8 @@ const Page = () => {
 			<Table {...tableProps} />
 
 			<Pagination {...paginationProps} />
+
+			<AssignmentDetail assignment={selectedAssignment} onClose={handleDetailModalClose} />
 		</main>
 	);
 };

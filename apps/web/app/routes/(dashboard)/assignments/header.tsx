@@ -3,7 +3,7 @@ import type { ChangeEventHandler, FC } from "react";
 
 import type { ASSIGNMENT_STATUS } from "@repo/value";
 
-import CreateModal from "./create-modal";
+import CreateNewAssignment from "./create-new-assignment";
 import { ASSIGNMENT_STATUS_OPTIONS } from "./utils";
 
 export type IHeader = {
@@ -62,7 +62,7 @@ const Header: FC<IHeader> = ({
 				</div>
 			</div>
 
-			<CreateModal onCreated={onCreated} />
+			<CreateNewAssignment onCreated={onCreated} />
 		</div>
 	</>
 );
