@@ -2,3 +2,5 @@
 set -e
 
 ./node_modules/.bin/nano-staged
+
+npm run test

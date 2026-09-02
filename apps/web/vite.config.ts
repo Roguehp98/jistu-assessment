@@ -24,7 +24,7 @@ const AUTO_IMPORT_CONFIG: AutoImportOptions = {
 	defaultExportByFilename: true,
 };
 
-export default defineConfig({
+export default defineConfig(() => ({
 	server: { port: 3000 },
 	plugins: [
 		tailwindcss(),
@@ -45,4 +45,4 @@ export default defineConfig({
 	define: {
 		"import.meta.env.SERVER_URL": JSON.stringify(process.env.SERVER_URL),
 	},
-});
+}));

@@ -15,6 +15,7 @@ Index — detail in linked section.
 - **Imports (auto)**: React, ahooks, react-router (`use*`, `Outlet`/`Link`/`NavLink`), es-toolkit, `clsx` (as `cn`).
 - **Exports** (`hooks/`, `ui/elements/`): default = main hook/component; named = secondary (helpers, types).
 - **Env**: all public env via `import.meta.env.*` (`vite.config.ts`) — **NEVER** `process.env` at runtime.
+- **Playground**: `/playground` is registered only under `NODE_ENV=development`; `page.tsx` dispatches colocated UI modules from a validated `{ ui, input }` JSON query.
 - **UI/Antd**: ui from `ui/elements` first -> single import from `antd`
 - **Deferred overlays**: Lazy-load heavy modal or drawer bodies on first open, then keep them mounted so controlled Ant Design close transitions and cleanup can finish.
 - **Location maps**: reusable map UI consumes generic points/ordered paths; routes own DTO mapping and selection state. Keep Leaflet behind the mounted client boundary and map CSS in `styles/location-map.css`.

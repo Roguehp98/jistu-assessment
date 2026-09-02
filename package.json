@@ -13,7 +13,8 @@
 		"kill:port": "./_scripts/kill-port.sh 3000 3001",
 		"lint:apply": "biome check --write --unsafe .",
 		"lint:check": "biome check .",
-		"prepare": "husky"
+		"prepare": "husky",
+		"test": "dotenv -- turbo test --ui=stream"
 	},
 	"nano-staged": {
 		"*": [

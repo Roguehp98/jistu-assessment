@@ -1,6 +1,6 @@
 import { index, layout, type RouteConfig, route } from "@react-router/dev/routes";
 
-import { DASHBOARD_ROUTES } from "./libs/route";
+import { DASHBOARD_ROUTES, DEVELOPMENT_ROUTES } from "./libs/route";
 
 const routes = [
 	/* DASHBOARD */
@@ -13,6 +13,7 @@ const routes = [
 
 if (process.env.NODE_ENV === "development") {
 	routes.push(route("/.well-known/appspecific/com.chrome.devtools.json", "routes/debug-null.tsx"));
+	routes.push(route(DEVELOPMENT_ROUTES.PLAYGROUND.path, "routes/(playground)/page.tsx"));
 }
 
 export default routes satisfies RouteConfig;

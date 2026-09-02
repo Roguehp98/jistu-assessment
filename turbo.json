@@ -15,6 +15,7 @@
 			"persistent": true,
 			"interruptible": true
 		},
-    "clean": {}
+    "clean": {},
+    "test": {}
   }
 }
